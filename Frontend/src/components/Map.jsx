@@ -117,26 +117,27 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     return "#6b7280"; // Default Gray
   };
 
-  // Simple ship icon - Optimized for large datasets
+  // Ship icon - clear vessel silhouette with heading direction.
   const makeShipIcon = (color, heading = 0) => {
-    // Larger ship-style marker with heading direction.
     const html = `
-      <div style="position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transform:rotate(${heading}deg);">
-        <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.2;"></div>
-        <div style="position:relative;width:24px;height:24px;border-radius:50%;background:linear-gradient(145deg, ${color}, #0f172a);border:2px solid rgba(255,255,255,0.75);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.35);">
-          <span style="font-size:12px;line-height:1;color:#fff;">⛴</span>
-        </div>
-        <div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid ${color};filter:drop-shadow(0 1px 1px rgba(0,0,0,0.35));"></div>
+      <div style="position:relative;width:46px;height:46px;cursor:pointer;transform:rotate(${heading}deg);">
+        <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.18;box-shadow:0 0 0 1px rgba(255,255,255,0.1),0 0 18px ${color};"></div>
+        <svg width="46" height="46" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;filter:drop-shadow(0 6px 10px rgba(0,0,0,0.45));">
+          <path d="M23 6 L29 16 L26 31 L20 31 L17 16 Z" fill="${color}" stroke="rgba(255,255,255,0.9)" stroke-width="1.7"/>
+          <rect x="19.3" y="16.5" width="7.4" height="7.2" rx="1.8" fill="#e2e8f0" />
+          <rect x="21.1" y="13.2" width="3.8" height="3.8" rx="1" fill="#f8fafc" />
+          <path d="M18 31.2 Q23 35 28 31.2" fill="#0f172a" stroke="${color}" stroke-width="2.2"/>
+          <circle cx="23" cy="10.5" r="1.4" fill="#f8fafc"/>
+        </svg>
       </div>`;
     return L.divIcon({
-      className: "",
+      className: "ship-location-marker",
       html,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -14]
+      iconSize: [46, 46],
+      iconAnchor: [23, 23],
+      popupAnchor: [0, -20]
     });
   };
-
   // Normalize ship data from different API formats - Optimized for large datasets
   const normalizeShipsFromApi = (data) => {
     if (!data) return [];
@@ -338,23 +339,23 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
       const marker = L.marker([ship.lat, ship.lon], {
         icon: makeShipIcon(color, ship.heading)
       }).bindPopup(`
-        <div style="font:13px/1.35 system-ui,sans-serif; min-width:280px; background-color: #ffffff; color: #333333; padding: 10px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-          <div style="font-weight:700; margin-bottom:8px; color:#007bff; font-size: 16px;">${ship.name}</div>
-          <table style="width:100%; font-size:12px; line-height:1.5; border-collapse: collapse;">
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">MMSI:</td><td style="font-weight: 500;">${ship.mmsi}</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Type:</td><td style="font-weight: 500;">${ship.shipType}</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Position:</td><td style="font-weight: 500;">${ship.lat.toFixed(4)}°, ${ship.lon.toFixed(4)}°</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Speed:</td><td style="font-weight: 500;">${ship.sog.toFixed(1)} knots</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Course:</td><td style="font-weight: 500;">${ship.cog.toFixed(0)}°</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Heading:</td><td style="font-weight: 500;">${ship.heading.toFixed(0)}°</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Destination:</td><td style="font-weight: 500;">${ship.destination}</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">ETA:</td><td style="font-weight: 500;">${ship.eta}</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Dimensions:</td><td style="font-weight: 500;">${ship.length}m × ${ship.width}m</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Draught:</td><td style="font-weight: 500;">${ship.draught.toFixed(1)}m</td></tr>
-            <tr><td style="padding:4px 8px 4px 0; color:#6c757d; font-weight: 600;">Last Update:</td><td style="font-weight: 500;">${ship.lastUpdate}</td></tr>
+        <div class="ship-popup-content">
+          <div class="ship-popup-title">${ship.name}</div>
+          <table class="ship-popup-table">
+            <tr><td class="label">MMSI</td><td class="value">${ship.mmsi}</td></tr>
+            <tr><td class="label">Type</td><td class="value">${ship.shipType}</td></tr>
+            <tr><td class="label">Position</td><td class="value">${ship.lat.toFixed(4)}, ${ship.lon.toFixed(4)}</td></tr>
+            <tr><td class="label">Speed</td><td class="value">${ship.sog.toFixed(1)} knots</td></tr>
+            <tr><td class="label">Course</td><td class="value">${ship.cog.toFixed(0)} deg</td></tr>
+            <tr><td class="label">Heading</td><td class="value">${ship.heading.toFixed(0)} deg</td></tr>
+            <tr><td class="label">Destination</td><td class="value">${ship.destination}</td></tr>
+            <tr><td class="label">ETA</td><td class="value">${ship.eta}</td></tr>
+            <tr><td class="label">Dimensions</td><td class="value">${ship.length}m x ${ship.width}m</td></tr>
+            <tr><td class="label">Draught</td><td class="value">${ship.draught.toFixed(1)}m</td></tr>
+            <tr><td class="label">Last Update</td><td class="value">${ship.lastUpdate}</td></tr>
           </table>
         </div>
-      `);
+      `, { className: "ship-popup-theme", maxWidth: 360 });
 
       marker.addTo(markerGroup);
     });

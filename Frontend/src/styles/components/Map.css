@@ -452,6 +452,70 @@
   box-shadow: none !important;
 }
 
+/* Popup theme for live ship markers */
+.leaflet-popup.ship-popup-theme .leaflet-popup-content-wrapper {
+  background: #020617 !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(30, 41, 59, 0.95) !important;
+  box-shadow: 0 14px 36px rgba(2, 6, 23, 0.72) !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup.ship-popup-theme .leaflet-popup-content {
+  margin: 0 !important;
+  padding: 12px 14px !important;
+  color: #f8fafc !important;
+}
+
+.leaflet-popup.ship-popup-theme .leaflet-popup-tip {
+  background: #020617 !important;
+  border: 1px solid rgba(30, 41, 59, 0.95) !important;
+}
+
+.ship-location-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.ship-popup-content {
+  min-width: 300px;
+  font-family: var(--font-body), "Plus Jakarta Sans", sans-serif;
+  color: #f8fafc;
+}
+
+.ship-popup-title {
+  margin-bottom: 8px;
+  color: #38bdf8;
+  font-family: var(--font-display), "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+
+.ship-popup-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ship-popup-table td {
+  padding: 4px 0;
+  vertical-align: top;
+}
+
+.ship-popup-table .label {
+  color: #94a3b8;
+  font-weight: 600;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.ship-popup-table .value {
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
 /* Playback marker visuals */
 .route-track-ship-marker {
   background: transparent !important;
