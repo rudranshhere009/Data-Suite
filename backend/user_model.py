@@ -70,8 +70,8 @@ class User:
             return None
     
     @classmethod
-    def authenticate(cls, username, password):
-        """Authenticate user with username and password"""
+    def authenticate(cls, identifier, password):
+        """Authenticate user with username or email and password."""
         try:
             engine = cls._get_db_connection()
             password_hash = cls._hash_password(password)
@@ -80,8 +80,9 @@ class User:
                 result = conn.execute(text("""
                     SELECT id, username, email, password_hash, created_at 
                     FROM users 
-                    WHERE username = :username AND password_hash = :password_hash
-                """), {"username": username, "password_hash": password_hash})
+                    WHERE (username = :identifier OR email = :identifier)
+                      AND password_hash = :password_hash
+                """), {"identifier": identifier, "password_hash": password_hash})
                 
                 row = result.fetchone()
                 if row:
@@ -102,6 +103,35 @@ class User:
                 
         except Exception as e:
             logger.error(f"Error authenticating user: {e}")
+            return None
+
+    @classmethod
+    def get_user_by_email(cls, email):
+        """Get user by email."""
+        try:
+            engine = cls._get_db_connection()
+
+            with engine.connect() as conn:
+                result = conn.execute(text("""
+                    SELECT id, username, email, password_hash, created_at, last_login
+                    FROM users
+                    WHERE email = :email
+                """), {"email": email})
+
+                row = result.fetchone()
+                if row:
+                    return {
+                        'id': row[0],
+                        'username': row[1],
+                        'email': row[2],
+                        'password_hash': row[3],
+                        'created_at': row[4],
+                        'last_login': row[5]
+                    }
+                return None
+
+        except Exception as e:
+            logger.error(f"Error getting user by email: {e}")
             return None
     
     @classmethod

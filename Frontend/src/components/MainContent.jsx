@@ -15,7 +15,7 @@ const MainContent = ({
   return (
     <div className="flex-1 overflow-hidden">
       {activeTab === "map" && (
-        <div className="h-full w-full">
+        <div className="h-full w-full animate-fadeIn">
           <Map 
             sidebarOpen={sidebarOpen} 
             setSidebarOpen={setSidebarOpen}
@@ -26,13 +26,13 @@ const MainContent = ({
       )}
       
       {activeTab === "dashboard" && (
-        <div className="h-full w-full overflow-auto p-6">
+        <div className="h-full w-full overflow-auto p-3 md:p-6 animate-fadeInUp bg-slate-950">
           <ApiDashboard />
         </div>
       )}
 
       {activeTab === "trends" && (
-        <div className="h-full w-full overflow-auto p-6">
+        <div className="h-full w-full overflow-auto p-3 md:p-6 animate-fadeInUp bg-slate-950">
           <TrendsDashboard />
         </div>
       )}
@@ -40,7 +40,7 @@ const MainContent = ({
       
 
       {activeTab === "routes" && (
-        <div className="h-full w-full overflow-auto p-6">
+        <div className="h-full w-full overflow-auto p-3 md:p-6 animate-fadeInUp bg-slate-950">
           <RoutesDashboard
             sidebarOpen={sidebarOpen}
             setSidebarOpen={setSidebarOpen}
@@ -51,7 +51,7 @@ const MainContent = ({
       )}
 
       {activeTab === "forecasting" && (
-        <div className="h-full w-full overflow-auto p-6">
+        <div className="h-full w-full overflow-auto p-3 md:p-6 animate-fadeInUp bg-slate-950">
           <TrafficForecasting />
         </div>
       )}

@@ -12,115 +12,71 @@ const Header = ({
 }) => {
   const { handleLogout } = useAuth();
 
+  const tabs = [
+    { id: 'map', label: 'Live Map' },
+    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'forecasting', label: 'Forecasting' },
+    { id: 'trends', label: 'Trends' },
+    { id: 'routes', label: 'Routes' },
+  ];
+
   return (
-    <div className="bg-white shadow-sm border-b border-gray-200"> {/* Added dark classes */}
-      <div className="flex items-center justify-between px-6 py-4">
-        {/* Left side - Hamburger menu (only visible on map tab) */}
-        <div className="flex items-center space-x-4">
-          {activeTab === "map" && (
+    <header className="bg-slate-950/95 backdrop-blur border-b border-slate-800 shadow-lg">
+      <div className="px-3 md:px-6 py-3 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          {activeTab === 'map' && (
             <button
-              className="hamburger-menu-header text-gray-800" // Added dark class
+              className="hamburger-menu-header text-slate-100"
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle menu"
             >
-              <div className="hamburger-line-header bg-gray-800"></div> {/* Added dark class */}
-              <div className="hamburger-line-header bg-gray-800"></div> {/* Added dark class */}
-              <div className="hamburger-line-header bg-gray-800"></div> {/* Added dark class */}
+              <div className="hamburger-line-header bg-slate-100"></div>
+              <div className="hamburger-line-header bg-slate-100"></div>
+              <div className="hamburger-line-header bg-slate-100"></div>
             </button>
           )}
-        </div>
-        
-        {/* Center - Title */}
-        <div className="flex-1 flex items-center justify-center space-x-4">
-          <h1 className="text-xl font-bold text-gray-800">
+          <h1 className="text-sm md:text-xl font-extrabold text-slate-100 tracking-tight truncate">
             AIS Maritime Tracking System
           </h1>
         </div>
-        
-        {/* Right side - Tab buttons, Refresh, and User info */}
-        <div className="flex space-x-4 items-center">
-          <button
-            onClick={() => setActiveTab("map")}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              activeTab === "map"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300" // Added dark classes
-            }`}
-          >
-            Live Map
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("dashboard")}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              activeTab === "dashboard"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300" // Added dark classes
-            }`}
-          >
-            Dashboard
-          </button>
 
-          <button
-            onClick={() => setActiveTab("forecasting")}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              activeTab === "forecasting"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            Forecasting
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("trends")}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              activeTab === "trends"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300" // Added dark classes
-            }`}
-          >
-            Trends
-          </button>
-          
-          
-          
-          <button
-            onClick={() => setActiveTab("routes")}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              activeTab === "routes"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300" // Added dark classes
-            }`}
-          >
-            Routes
-          </button>
-          
-          {/* Refresh Button - only visible on map tab */}
-          {activeTab === "map" && refreshData && (
+        <div className="flex items-center justify-end gap-2 md:gap-3 flex-wrap">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 md:px-4 py-2 rounded-lg font-semibold text-sm md:text-base whitespace-nowrap transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === 'map' && refreshData && (
             <button
               onClick={async () => {
-                console.log("🔄 Refresh button clicked");
                 setIsRefreshing(true);
-                
-                // Show loading for 0.5 seconds minimum
-                const loadingPromise = new Promise(resolve => setTimeout(resolve, 500));
+                const loadingPromise = new Promise((resolve) => setTimeout(resolve, 500));
                 const dataPromise = refreshData();
-                
                 await Promise.all([loadingPromise, dataPromise]);
                 setIsRefreshing(false);
               }}
               disabled={isRefreshing}
-              className={`p-2 rounded-md font-medium transition-colors ${
-                isRefreshing 
-                  ? "bg-gray-400 cursor-not-allowed" 
-                  : "bg-green-600 hover:bg-green-700"
+              className={`p-2.5 rounded-xl font-medium transition-all duration-200 ${
+                isRefreshing
+                  ? 'bg-slate-600 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-md hover:shadow-lg'
               } text-white`}
               title="Refresh Data"
               aria-label="Refresh Data"
             >
-              <svg 
-                className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
+              <svg
+                className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : 'animate-pulse'}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -130,25 +86,22 @@ const Header = ({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M4 4v5h5M20 20v-5h-5M17.657 6.343A8 8 0 006.343 17.657M6.343 6.343A8 8 0 0117.657 17.657"
+                  d="M13 2L4 14h7l-1 8 10-14h-7l0-6z"
                 />
               </svg>
             </button>
           )}
-          
-          {/* User info and logout */}
-          <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-gray-300 text-gray-700"> {/* Added dark class */}
-            <button
-              onClick={handleLogout}
-              className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
-              title="Logout"
-            >
-              Logout
-            </button>
-          </div>
+
+          <button
+            onClick={handleLogout}
+            className="px-3 py-2 text-xs md:text-sm bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors"
+            title="Logout"
+          >
+            Logout
+          </button>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

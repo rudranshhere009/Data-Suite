@@ -1,21 +1,24 @@
-import { useState, useEffect } from 'react';
-import { 
-  getShips, 
-  getShipTypeTrends, 
+import React, { useState, useEffect } from 'react';
+import {
+  getShips,
+  getShipTypeTrends,
   getFishingSeasonality,
   getCommercialRatio,
   getMonthlyShipTotal
 } from '../services/aisApi';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Pie, Doughnut, Bar } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const ApiDashboard = () => {
   const [stats, setStats] = useState({
     totalShips: 0,
-    monthlyTotal: { 
-      ships_this_month: 0, 
-      total_ships_in_db: 0, 
+    monthlyTotal: {
+      ships_this_month: 0,
+      total_ships_in_db: 0,
       total_records: 0,
-      month: 'Loading...', 
-      timestamp: null 
+      month: 'Loading...',
     },
     lastUpdate: null,
     shipTypes: [],
@@ -29,9 +32,8 @@ const ApiDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      setStats(prev => ({ ...prev, loading: true, error: null }));
+      setStats((prev) => ({ ...prev, loading: true, error: null }));
 
-      // Fetch all dashboard data in parallel
       const [ships, trends, fishing, ratio, monthlyTotal] = await Promise.allSettled([
         getShips({ limit: 100 }),
         getShipTypeTrends(),
@@ -40,32 +42,27 @@ const ApiDashboard = () => {
         getMonthlyShipTotal()
       ]);
 
-      // Safe extraction
       const shipsData = ships.status === 'fulfilled' ? ships.value : [];
       const shipTypesData = trends.status === 'fulfilled' ? trends.value || [] : [];
       const fishingData = fishing.status === 'fulfilled' ? fishing.value || [] : [];
       const ratioData = ratio.status === 'fulfilled' ? ratio.value || [] : [];
       const monthlyTotalData = monthlyTotal.status === 'fulfilled' ? monthlyTotal.value || {} : {};
 
-      // Process ship types into commercial and non-commercial categories
       const commercialTypes = ['Cargo', 'Tanker', 'Passenger'];
       const commercialShips = {};
       const nonCommercialShips = {};
 
-      shipTypesData
-        .filter(Boolean)
-        .forEach(item => {
-          // Normalize ship type: capitalize first letter, lowercase the rest
-          let rawType = item.ship_type || 'Unknown';
-          let shipType = rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase();
-          const count = item.count || 0;
+      shipTypesData.forEach((item) => {
+        const rawType = item.ship_type || 'Unknown';
+        const shipType = rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase();
+        const count = item.count || 0;
 
-          if (commercialTypes.some(type => shipType.toLowerCase().includes(type.toLowerCase()))) {
-            commercialShips[shipType] = (commercialShips[shipType] || 0) + count;
-          } else {
-            nonCommercialShips[shipType] = (nonCommercialShips[shipType] || 0) + count;
-          }
-        });
+        if (commercialTypes.some((type) => shipType.toLowerCase().includes(type.toLowerCase()))) {
+          commercialShips[shipType] = (commercialShips[shipType] || 0) + count;
+        } else {
+          nonCommercialShips[shipType] = (nonCommercialShips[shipType] || 0) + count;
+        }
+      });
 
       setStats({
         totalShips: Array.isArray(shipsData) ? shipsData.length : (shipsData.total || 0),
@@ -74,7 +71,6 @@ const ApiDashboard = () => {
           total_ships_in_db: 0,
           total_records: 0,
           month: 'Unknown',
-          timestamp: null,
           ...monthlyTotalData
         },
         lastUpdate: new Date().toLocaleString(),
@@ -86,14 +82,9 @@ const ApiDashboard = () => {
         loading: false,
         error: null
       });
-
     } catch (error) {
       console.error('Dashboard data fetch failed:', error);
-      setStats(prev => ({ 
-        ...prev, 
-        loading: false, 
-        error: error.message || 'Unknown error' 
-      }));
+      setStats((prev) => ({ ...prev, loading: false, error: error.message || 'Unknown error' }));
     }
   };
 
@@ -103,144 +94,98 @@ const ApiDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const shipTypeChartData = {
+    labels: stats.shipTypes.slice(0, 8).map((item) => item.ship_type || 'Unknown'),
+    datasets: [{
+      data: stats.shipTypes.slice(0, 8).map((item) => item.count || 0),
+      backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#0ea5e9', '#14b8a6', '#f97316']
+    }]
+  };
+
+  const commercialPieData = {
+    labels: ['Commercial', 'Non-Commercial'],
+    datasets: [{
+      data: [
+        Object.values(stats.commercialShips).reduce((sum, c) => sum + c, 0),
+        Object.values(stats.nonCommercialShips).reduce((sum, c) => sum + c, 0),
+      ],
+      backgroundColor: ['#10b981', '#3b82f6']
+    }]
+  };
+
+  const fishingBarData = {
+    labels: (stats.fishingData || []).map((item) => `M${item.month}`),
+    datasets: [{
+      label: 'Fishing Vessels',
+      data: (stats.fishingData || []).map((item) => item.fishing_vessels || 0),
+      backgroundColor: '#0ea5e9'
+    }]
+  };
+
   if (stats.loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+      <div className="flex justify-center items-center min-h-screen bg-slate-950 rounded-2xl border border-slate-800">
+        <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-blue-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen text-gray-900">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-extrabold text-gray-800">AIS Dashboard</h2>
+    <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 rounded-2xl border border-slate-800 shadow-2xl">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-slate-100 animate-fadeInDown">AIS Dashboard</h2>
         <button
           onClick={() => setTimeout(fetchDashboardData, 500)}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+          className="px-5 py-2.5 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
         >
           Refresh Data
         </button>
       </div>
 
       {stats.error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+        <div className="bg-red-950/40 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-6" role="alert">
           <strong className="font-bold">Error:</strong>
           <span className="block sm:inline"> {stats.error}</span>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {/* Total Ships */}
-        <div className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">Total Ships</h3>
-          <p className="text-4xl font-bold text-gray-800">{(stats.totalShips || 0).toLocaleString()}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-2xl shadow-lg animate-fadeInUp">
+          <p className="text-slate-400 text-sm">Ships in View</p>
+          <p className="text-3xl font-bold text-slate-100">{(stats.totalShips || 0).toLocaleString()}</p>
         </div>
-
-        {/* Ship Types */}
-        <div className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
-          <h3 className="text-lg font-semibold text-purple-600 mb-2">Unique Ship Types</h3>
-          <p className="text-4xl font-bold text-gray-800">{(stats.shipTypes || []).length}</p>
+        <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-2xl shadow-lg animate-fadeInUp">
+          <p className="text-slate-400 text-sm">Ships This Month</p>
+          <p className="text-3xl font-bold text-slate-100">{(stats.monthlyTotal?.ships_this_month || 0).toLocaleString()}</p>
         </div>
-
-        {/* Fishing Vessels */}
-        <div className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
-          <h3 className="text-lg font-semibold text-orange-600 mb-2">Fishing Vessels</h3>
-          <p className="text-4xl font-bold text-gray-800">
-            {(stats.fishingData || []).reduce((sum, item) => sum + (item?.fishing_vessels || 0), 0).toLocaleString()}
-          </p>
+        <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-2xl shadow-lg animate-fadeInUp">
+          <p className="text-slate-400 text-sm">Total Ships in DB</p>
+          <p className="text-3xl font-bold text-slate-100">{(stats.monthlyTotal?.total_ships_in_db || 0).toLocaleString()}</p>
+        </div>
+        <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-2xl shadow-lg animate-fadeInUp">
+          <p className="text-slate-400 text-sm">Total AIS Records</p>
+          <p className="text-3xl font-bold text-slate-100">{(stats.monthlyTotal?.total_records || 0).toLocaleString()}</p>
         </div>
       </div>
 
-      {/* Additional Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">Total Ships in Database</h3>
-          <p className="text-4xl font-bold text-gray-800">
-            {(stats.monthlyTotal?.total_ships_in_db || 0).toLocaleString()}
-          </p>
-          <p className="text-sm text-gray-500 mt-1">Unique vessels tracked over time</p>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+        <div className="bg-slate-900/90 border border-slate-700 p-4 md:p-6 rounded-2xl shadow-xl animate-fadeInUp">
+          <h3 className="text-lg font-bold text-slate-100 mb-4">Ship Type Distribution</h3>
+          <div className="h-72"><Pie data={shipTypeChartData} options={{ responsive: true, maintainAspectRatio: false }} /></div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
-          <h3 className="text-lg font-semibold text-purple-600 mb-2">Total AIS Records</h3>
-          <p className="text-4xl font-bold text-gray-800">
-            {(stats.monthlyTotal?.total_records || 0).toLocaleString()}
-          </p>
-          <p className="text-sm text-gray-500 mt-1">All recorded AIS positions</p>
+        <div className="bg-slate-900/90 border border-slate-700 p-4 md:p-6 rounded-2xl shadow-xl animate-fadeInUp">
+          <h3 className="text-lg font-bold text-slate-100 mb-4">Commercial Split</h3>
+          <div className="h-72"><Doughnut data={commercialPieData} options={{ responsive: true, maintainAspectRatio: false }} /></div>
+        </div>
+
+        <div className="bg-slate-900/90 border border-slate-700 p-4 md:p-6 rounded-2xl shadow-xl animate-fadeInUp">
+          <h3 className="text-lg font-bold text-slate-100 mb-4">Fishing Seasonality</h3>
+          <div className="h-72"><Bar data={fishingBarData} options={{ responsive: true, maintainAspectRatio: false }} /></div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Ship Types */}
-        <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Ship Types</h3>
-          <div className="space-y-3">
-            {(() => {
-              const uniqueTypes = [];
-              const seen = new Set();
-              (stats.shipTypes || [])
-                .filter(Boolean)
-                .sort((a, b) => (b?.count || 0) - (a?.count || 0))
-                .forEach(type => {
-                  const name = type?.ship_type || 'Unknown';
-                  if (!seen.has(name)) {
-                    uniqueTypes.push(type);
-                    seen.add(name);
-                  }
-                });
-              return uniqueTypes.slice(0, 10).map((type, index) => (
-                <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
-                  <span className="text-gray-700 font-medium">{type?.ship_type || 'Unknown'}</span>
-                  <span className="text-blue-600 font-bold">{(type?.count || 0).toLocaleString()}</span>
-                </div>
-              ));
-            })()}
-          </div>
-        </div>
-
-        {/* Commercial vs Non-Commercial */}
-        <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Commercial vs Non-Commercial Vessels</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="text-lg font-semibold text-green-600 mb-3">Commercial Ships</h4>
-              <div className="space-y-2">
-                {Object.entries(stats.commercialShips || {})
-                  .sort(([, a], [, b]) => (b || 0) - (a || 0))
-                  .map(([shipType, count], index) => (
-                    <div key={`commercial-${index}`} className="flex justify-between items-center">
-                      <span className="text-gray-700">{shipType}</span>
-                      <span className="text-green-600 font-bold">{(count || 0).toLocaleString()}</span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold text-red-600 mb-3">Non-Commercial Ships</h4>
-              <div className="space-y-2">
-                {(() => {
-                  const entries = Object.entries(stats.nonCommercialShips || {})
-                    .sort(([, a], [, b]) => (b || 0) - (a || 0));
-                  return (entries.length > 0
-                    ? entries.map(([shipType, count], index) => (
-                        <div key={`non-commercial-${index}`} className="flex justify-between items-center">
-                          <span className="text-gray-700">{shipType}</span>
-                          <span className="text-red-600 font-bold">{(count || 0).toLocaleString()}</span>
-                        </div>
-                      ))
-                    : <span className="text-gray-500">No non-commercial ships found.</span>
-                  );
-                })()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="text-center text-gray-500 text-sm mt-8">
-        Last updated: {stats.lastUpdate}
-      </div>
+      <div className="text-center text-slate-400 text-sm mt-8">Last updated: {stats.lastUpdate}</div>
     </div>
   );
 };

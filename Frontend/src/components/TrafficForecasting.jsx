@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { getTrafficPrediction, getSpeedForecast } from "../services/aisApi";
 import { getRiskByDatetime, getRiskByShip } from "../services/riskApi";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Bar, Line, Pie } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
 
 const TrafficForecasting = () => {
   // State for risk by datetime
@@ -145,20 +145,31 @@ const TrafficForecasting = () => {
     },
   });
 
+  const getTrafficPieData = () => {
+    if (!trafficResult || !trafficResult.totals) return { labels: [], datasets: [] };
+    return {
+      labels: ['Reached', 'In Transit'],
+      datasets: [{
+        data: [trafficResult.totals.reached || 0, trafficResult.totals.in_transit || 0],
+        backgroundColor: ['#3b82f6', '#f59e0b'],
+      }]
+    };
+  };
+
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen text-gray-900">
-      <h2 className="text-3xl font-extrabold mb-8 tracking-tight text-center">Forecasting Dashboard</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+    <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 rounded-2xl border border-slate-800 shadow-2xl">
+      <h2 className="text-2xl md:text-3xl font-extrabold mb-6 md:mb-8 tracking-tight text-center animate-fadeInDown">Forecasting Dashboard</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
         
         {/* Traffic Prediction Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center border border-gray-200">
+        <div className="bg-slate-900/90 p-4 md:p-6 rounded-2xl shadow-xl flex flex-col items-center border border-slate-700 animate-fadeInUp">
           <h3 className="text-lg font-bold mb-4 text-blue-700">Traffic Prediction</h3>
           <input
             type="date"
             value={trafficDate}
             onChange={e => setTrafficDate(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && trafficDate) fetchTrafficPrediction(); }}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <button
             onClick={fetchTrafficPrediction}
@@ -170,16 +181,19 @@ const TrafficForecasting = () => {
           {trafficError && <div className="text-red-500 mb-2 text-xs">{trafficError}</div>}
           {trafficResult && (
             <>
-              <div className="mb-3 text-blue-700 font-semibold text-center text-sm">{trafficResult.summary}</div>
+              <div className="mb-3 text-blue-300 font-semibold text-center text-sm">{trafficResult.summary}</div>
               <div className="w-full h-48">
                 <Bar data={getTrafficChartData()} options={chartOptions('Traffic by Port')} />
+              </div>
+              <div className="w-full h-52 mt-4">
+                <Pie data={getTrafficPieData()} options={chartOptions('Reached vs In Transit')} />
               </div>
             </>
           )}
         </div>
 
         {/* Speed Forecast Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center border border-gray-200">
+        <div className="bg-slate-900/90 p-4 md:p-6 rounded-2xl shadow-xl flex flex-col items-center border border-slate-700 animate-fadeInUp">
           <h3 className="text-lg font-bold mb-4 text-blue-700">Speed Forecast</h3>
           <input
             type="text"
@@ -187,7 +201,7 @@ const TrafficForecasting = () => {
             value={speedMmsi}
             onChange={e => setSpeedMmsi(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && speedMmsi && speedDays) fetchSpeedForecast(); }}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <input
             type="number"
@@ -197,7 +211,7 @@ const TrafficForecasting = () => {
             onChange={e => setSpeedDays(e.target.value)}
             placeholder="Enter number of days ahead"
             onKeyDown={e => { if (e.key === 'Enter' && speedMmsi && speedDays) fetchSpeedForecast(); }}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <button
             onClick={fetchSpeedForecast}
@@ -209,16 +223,16 @@ const TrafficForecasting = () => {
           {speedError && <div className="text-red-500 mb-2 text-xs">{speedError}</div>}
           {speedResult && (
             <>
-              <div className="mb-3 text-blue-700 font-semibold text-center text-sm">{speedResult.summary}</div>
+              <div className="mb-3 text-blue-300 font-semibold text-center text-sm">{speedResult.summary}</div>
               
               {/* Final Day Speed Highlight */}
-              <div className="mb-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+              <div className="mb-4 p-3 bg-blue-950/40 border-2 border-blue-700 rounded-lg">
                 <div className="text-center">
-                  <div className="text-xs text-gray-600 mb-1">Day {speedResult.days_ahead} Predicted Speed:</div>
-                  <div className="text-lg font-bold text-blue-800">
+                  <div className="text-xs text-slate-400 mb-1">Day {speedResult.days_ahead} Predicted Speed:</div>
+                  <div className="text-lg font-bold text-blue-300">
                     {speedResult.predicted_speed.toFixed(2)} knots
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-slate-500 mt-1">
                     ({speedResult.days_ahead} days ahead)
                   </div>
                 </div>
@@ -228,14 +242,14 @@ const TrafficForecasting = () => {
                 <Line data={getSpeedChartData()} options={chartOptions('Predicted Speed Over Days')} />
               </div>
               {/* Daily Speed Values */}
-              <div className="w-full max-h-32 overflow-y-auto border border-gray-200 rounded p-2">
-                <div className="text-xs font-semibold text-gray-700 mb-2">Daily Speed Predictions:</div>
+              <div className="w-full max-h-32 overflow-y-auto border border-slate-700 rounded p-2 bg-slate-800/60">
+                <div className="text-xs font-semibold text-slate-200 mb-2">Daily Speed Predictions:</div>
                 <div className="grid grid-cols-2 gap-1 text-xs">
                   {speedResult.data.map((speed, index) => (
                     <div key={index} className={`flex justify-between p-1 rounded ${
                       index === speedResult.data.length - 1 
                         ? 'bg-blue-100 border border-blue-300 font-semibold' 
-                        : 'bg-gray-50'
+                        : 'bg-slate-800'
                     }`}>
                       <span>Day {index + 1}:</span>
                       <span className="font-medium">{speed.toFixed(2)} knots</span>
@@ -248,27 +262,27 @@ const TrafficForecasting = () => {
         </div>
 
         {/* Risk Analysis by Datetime Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center border border-gray-200">
+        <div className="bg-slate-900/90 p-4 md:p-6 rounded-2xl shadow-xl flex flex-col items-center border border-slate-700 animate-fadeInUp">
           <h3 className="text-lg font-bold mb-4 text-blue-700">Risk Analysis (By Datetime)</h3>
           <input
             type="text"
             placeholder="Enter Ship Name (e.g. Victoria)"
             value={riskShipName}
             onChange={e => setRiskShipName(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <input
             type="date"
             value={riskDate}
             onChange={e => setRiskDate(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <input
             type="time"
             value={riskTime}
             onChange={e => setRiskTime(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && riskShipName && riskDate && riskTime) fetchRiskByDatetime(); }}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <button
             onClick={fetchRiskByDatetime}
@@ -282,7 +296,7 @@ const TrafficForecasting = () => {
             <div className={`mb-2 text-center font-medium text-sm ${riskDatetimeResult.alert ? 'text-red-600' : 'text-green-600'}`}>
               {riskDatetimeResult.message}
               {riskDatetimeResult.alert && riskDatetimeResult.details && (
-                <ul className="mt-2 text-xs text-gray-700">
+                <ul className="mt-2 text-xs text-slate-300">
                   {riskDatetimeResult.details.map((d, idx) => (
                     <li key={idx}>
                       {d.other_ship} at ({d.latitude.toFixed(4)}, {d.longitude.toFixed(4)}) - {d.distance_km} km
@@ -295,7 +309,7 @@ const TrafficForecasting = () => {
         </div>
 
         {/* Risk Analysis by Ship Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center border border-gray-200">
+        <div className="bg-slate-900/90 p-4 md:p-6 rounded-2xl shadow-xl flex flex-col items-center border border-slate-700 animate-fadeInUp">
           <h3 className="text-lg font-bold mb-4 text-blue-700">Risk Analysis (By Ship)</h3>
           <input
             type="text"
@@ -303,7 +317,7 @@ const TrafficForecasting = () => {
             value={riskShipOnlyName}
             onChange={e => setRiskShipOnlyName(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && riskShipOnlyName) fetchRiskByShip(); }}
-            className="border border-gray-300 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
           <button
             onClick={fetchRiskByShip}
@@ -317,7 +331,7 @@ const TrafficForecasting = () => {
             <div className={`mb-2 text-center font-medium text-sm ${riskShipResult.alert ? 'text-red-600' : 'text-green-600'}`}>
               {riskShipResult.message}
               {riskShipResult.alert && riskShipResult.risk_dates && (
-                <ul className="mt-2 text-xs text-gray-700">
+                <ul className="mt-2 text-xs text-slate-300">
                   {riskShipResult.risk_dates.map((d, idx) => (
                     <li key={idx}>{d}</li>
                   ))}

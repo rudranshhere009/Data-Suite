@@ -1,7 +1,5 @@
 /* Auth.css */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
 :root {
   --primary-color: #3a7bd5;
   --secondary-color: #3a6073;
@@ -20,7 +18,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-body);
   background: linear-gradient(45deg, #1a1a1a, #3a3a3a);
   background-image: url('/auth-bg.jpg');
   background-size: 150% 150%;
@@ -61,6 +59,7 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
   color: var(--text-color);
   animation: fadeIn 1s ease-in-out;
+  color-scheme: dark;
 }
 
 @keyframes fadeIn {
@@ -114,8 +113,10 @@
   border: 1px solid var(--input-border-color);
   border-radius: 10px;
   color: var(--text-color);
+  -webkit-text-fill-color: var(--text-color);
   font-size: 1rem;
   transition: all 0.3s ease;
+  caret-color: #ffffff;
 }
 
 .form-group input::placeholder {
@@ -127,6 +128,17 @@
   border-color: var(--primary-color);
   box-shadow: 0 0 15px rgba(58, 123, 213, 0.5);
   background: rgba(0, 0, 0, 0.5);
+}
+
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus,
+.form-group input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text-color) !important;
+  caret-color: #ffffff !important;
+  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.35) inset !important;
+  border: 1px solid var(--input-border-color) !important;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .submit-button {

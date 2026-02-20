@@ -121,8 +121,9 @@ const RoutesDashboard = ({
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen text-gray-900 animate-fadeIn">
-      <div className="relative flex items-center mb-8 shadow-xl rounded-lg overflow-hidden bg-white">
+    <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 animate-fadeIn rounded-2xl border border-slate-800 shadow-2xl">
+      <div className="relative mb-8 bg-slate-900/90 backdrop-blur border border-slate-700 shadow-xl rounded-2xl overflow-hidden">
+        <div className="flex flex-col md:flex-row items-stretch">
         <input
           type="text"
           placeholder="Search by Ship Name or MMSI"
@@ -133,12 +134,12 @@ const RoutesDashboard = ({
               handleSearch();
             }
           }}
-          className="flex-grow p-4 text-lg border-none outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out bg-transparent text-gray-800 placeholder-gray-500"
+          className="flex-grow p-4 text-base md:text-lg border-none outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-30 transition-all duration-300 ease-in-out bg-transparent text-slate-100 placeholder-slate-400 caret-blue-400"
         />
         {searchTerm && (
           <button
             onClick={() => setSearchTerm('')}
-            className="absolute right-28 text-gray-500 hover:text-gray-800 transition-colors duration-200 p-2 text-2xl"
+            className="absolute right-4 md:right-32 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-100 transition-colors duration-200 p-2 text-2xl"
             aria-label="Clear search"
           >
             &times;
@@ -146,7 +147,7 @@ const RoutesDashboard = ({
         )}
         <button
           onClick={handleSearch}
-          className={`px-8 py-4 text-lg font-bold text-white transition-all duration-300 ease-in-out transform hover:scale-105
+          className={`px-8 py-4 text-base md:text-lg font-bold text-white transition-all duration-300 ease-in-out md:transform md:hover:scale-105
             ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'}
             ${loading ? 'animate-pulse' : ''}
           `}
@@ -154,16 +155,17 @@ const RoutesDashboard = ({
         >
           {loading ? 'Searching...' : 'Search'}
         </button>
+        </div>
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 animate-shake" role="alert">
+        <div className="bg-red-950/40 border border-red-500 text-red-200 px-4 py-3 rounded relative mb-6 animate-shake" role="alert">
           <strong className="font-bold">Error:</strong>
           <span className="block sm:inline"> {error}</span>
         </div>
       )}
       {loading && (
-        <div className="flex justify-center items-center min-h-[100px] bg-gray-100 mb-6">
+        <div className="flex justify-center items-center min-h-[100px] bg-slate-900 mb-6 rounded-xl border border-slate-700">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
         </div>
       )}
@@ -171,7 +173,7 @@ const RoutesDashboard = ({
       {!loading && !shipDetails && !error && <Welcome />}
 
       {showShipProfile && shipDetails && (
-        <div className="mt-8 p-6 bg-white rounded-xl shadow-lg animate-fadeInUp">
+        <div className="mt-8 p-4 md:p-6 bg-slate-900/90 border border-slate-700 rounded-2xl shadow-xl animate-fadeInUp">
           <ShipProfile 
             shipDetails={shipDetails} 
             routeData={routeData} 
@@ -184,8 +186,8 @@ const RoutesDashboard = ({
 
       {/* Map Pop-up Modal */}
       {showMapPopup && routeData && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-4xl h-5/6 relative transform transition-all duration-300 ease-in-out scale-95 animate-scaleIn">
+        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn p-2 md:p-4">
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-2xl w-full max-w-4xl h-[92vh] md:h-5/6 relative transform transition-all duration-300 ease-in-out scale-95 animate-scaleIn">
             <button
               onClick={handleCloseMapPopup}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold transition-colors duration-200"
@@ -193,7 +195,7 @@ const RoutesDashboard = ({
             >
               &times;
             </button>
-            <h3 className="text-2xl font-extrabold mb-4 text-gray-800 border-b pb-2">Ship Route Map</h3>
+            <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-gray-800 border-b pb-2">Ship Route Map</h3>
             <div className="w-full h-[calc(100%-5rem)] rounded-lg overflow-hidden">
               <Map 
                 routeData={routeData} 
@@ -209,7 +211,7 @@ const RoutesDashboard = ({
         <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-2">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl h-[95vh] relative overflow-hidden">
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-xl">
-              <h3 className="text-xl font-bold flex items-center">
+              <h3 className="text-base md:text-xl font-bold flex items-center">
                 <span className="material-icons mr-2">analytics</span>
                 Ship Route Analytics Dashboard
               </h3>
@@ -233,8 +235,8 @@ const RoutesDashboard = ({
 
       {/* Anomaly Pop-up Modal (New) */}
       {showAnomalyPopup && routeData && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-4xl h-5/6 relative transform transition-all duration-300 ease-in-out scale-95 animate-scaleIn">
+        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn p-2 md:p-4">
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-2xl w-full max-w-4xl h-[92vh] md:h-5/6 relative transform transition-all duration-300 ease-in-out scale-95 animate-scaleIn">
             <button
               onClick={handleCloseAnomalyPopup}
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold transition-colors duration-200"
@@ -242,7 +244,7 @@ const RoutesDashboard = ({
             >
               &times;
             </button>
-            <h3 className="text-2xl font-extrabold mb-4 text-gray-800 border-b pb-2">Destination Change Anomalies</h3>
+            <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-gray-800 border-b pb-2">Destination Change Anomalies</h3>
             <div className="w-full h-[calc(100%-5rem)] rounded-lg overflow-auto">
               {getAnomalies().length > 0 ? (
                 <table className="min-w-full divide-y divide-gray-200">

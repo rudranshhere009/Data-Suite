@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import CORS
-from werkzeug.security import generate_password_hash, check_password_hash
 from config import db
 from user_model import User
-from flask_jwt_extended import create_access_token, jwt_required, JWTManager
+import re
 
 auth_bp = Blueprint('auth', __name__)
 CORS(auth_bp)
+
+EMAIL_REGEX = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
@@ -30,10 +31,15 @@ def signup():
         
         if len(password) < 6:
             return jsonify({'error': 'Password must be at least 6 characters long'}), 400
+
+        if not EMAIL_REGEX.match(email):
+            return jsonify({'error': 'Please provide a valid email address'}), 400
         
         # Check if user already exists
         if User.get_user(username):
             return jsonify({'error': 'Username already exists'}), 409
+        if User.get_user_by_email(email):
+            return jsonify({'error': 'Email already exists'}), 409
         
         # Create new user
         user = User.create_user(username, email, password)
@@ -64,16 +70,20 @@ def signin():
         if not data:
             return jsonify({'error': 'No data provided'}), 400
         
-        username = data.get('username', '').strip()
+        identifier = (
+            data.get('identifier', '').strip()
+            or data.get('username', '').strip()
+            or data.get('email', '').strip()
+        )
         password = data.get('password', '').strip()
         
-        if not username or not password:
-            return jsonify({'error': 'Username and password are required'}), 400
+        if not identifier or not password:
+            return jsonify({'error': 'Username/email and password are required'}), 400
         
-        # Authenticate user
-        user_data = User.authenticate(username, password)
+        # Authenticate user by username or email
+        user_data = User.authenticate(identifier, password)
         if not user_data:
-            return jsonify({'error': 'Invalid username or password'}), 401
+            return jsonify({'error': 'Invalid username/email or password'}), 401
         
         # Create user instance for token generation
         user = User(user_data['username'], user_data['email'], '')  # Password not needed for token gen

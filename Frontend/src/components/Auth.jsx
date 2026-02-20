@@ -38,7 +38,7 @@ const Auth = ({ onAuthSuccess }) => {
       const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/signin';
       const payload = isSignup 
         ? { username: formData.username, email: formData.email, password: formData.password }
-        : { username: formData.username, password: formData.password };
+        : { identifier: formData.username, password: formData.password };
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -95,21 +95,23 @@ const Auth = ({ onAuthSuccess }) => {
                 onChange={handleInputChange}
                 required
                 placeholder="Email"
+                autoComplete="email"
               />
             </div>
           )}
           <div className="form-group">
             <i className="material-icons icon">person</i>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              minLength="3"
-              placeholder="Username"
-            />
-          </div>
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                required
+                minLength={isSignup ? 3 : 1}
+                placeholder={isSignup ? 'Username' : 'Username or Email'}
+                autoComplete={isSignup ? 'username' : 'username'}
+              />
+            </div>
           <div className="form-group">
             <i className="material-icons icon">lock</i>
             <input
@@ -117,11 +119,12 @@ const Auth = ({ onAuthSuccess }) => {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              required
-              minLength="6"
-              placeholder="Password"
-            />
-          </div>
+                required
+                minLength="6"
+                placeholder="Password"
+                autoComplete={isSignup ? 'new-password' : 'current-password'}
+              />
+            </div>
 
           {error && <div className="auth-message error">{error}</div>}
           {successMessage && <div className="auth-message success">{successMessage}</div>}

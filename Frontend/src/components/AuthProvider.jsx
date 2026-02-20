@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       if (token && userData) {
         try {
           // Verify token with backend
-          const response = await fetch('http://localhost:5000/auth/verify', {
+          const response = await fetch('/api/auth/verify', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

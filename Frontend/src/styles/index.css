@@ -1,19 +1,25 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap');
 
-/* Light theme variables */
 :root {
-  --color-bg-primary: #ffffff; /* White background */
-  --color-text-primary: #1f2937; /* Dark text */
-  --color-border-primary: #d1d5db; /* Light border */
-  --color-bg-secondary: #f3f4f6; /* Light gray background for secondary elements */
-  --color-text-secondary: #4b5563; /* Medium gray text */
+  --color-bg-primary: #020617;
+  --color-text-primary: #e2e8f0;
+  --color-border-primary: #1e293b;
+  --color-bg-secondary: #0f172a;
+  --color-text-secondary: #94a3b8;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
 }
 
-/* Apply theme variables */
 body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
 }
 
 /* Hamburger menu in header */
@@ -30,7 +36,7 @@ body {
 }
 
 .hamburger-menu-header:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(148, 163, 184, 0.15);
 }
 
 .hamburger-line-header {
@@ -59,9 +65,22 @@ html, body, #root {
   margin: 0;
 }
 
+input, textarea {
+  caret-color: #2563eb;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Prevent map duplication and set background */
 .leaflet-container {
-  background: #f0f0f0; /* Lighter map background */
+  background: #f0f0f0;
 }
 
 /* Remove specific adjustments for dark mode, let Tailwind defaults handle it */

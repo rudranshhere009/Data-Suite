@@ -30,7 +30,7 @@ const AppContent = () => {
 
   // Main application interface
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-100 text-gray-900">
+    <div className="h-screen w-screen flex flex-col bg-slate-950 text-slate-100">
       <Header 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
