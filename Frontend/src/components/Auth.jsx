@@ -42,13 +42,23 @@ const Auth = ({ onAuthSuccess }) => {
         ? { username: formData.username, email: formData.email, password: formData.password }
         : { identifier: formData.username, password: formData.password };
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify(payload),
       });
+      clearTimeout(timeoutId);
 
-      const data = await response.json();
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
       if (response.ok) {
         if (isSignup) {
@@ -65,7 +75,11 @@ const Auth = ({ onAuthSuccess }) => {
       }
     } catch (err) {
       console.error(err);
-      setError('Network error. Could not connect to the server.');
+      if (err.name === 'AbortError') {
+        setError('Request timed out. Backend may be sleeping, please try again.');
+      } else {
+        setError('Network error. Could not connect to the server.');
+      }
     } finally {
       setLoading(false);
     }

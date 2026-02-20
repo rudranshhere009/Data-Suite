@@ -251,10 +251,11 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
 
     mapRef.current = map;
 
-    // Nautical-friendly dark blue style.
-    L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+    // Dark theme tiles without API key requirement.
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      subdomains: "abcd",
       maxZoom: 20,
-      attribution: "&copy; Stadia Maps & OpenMapTiles & OpenStreetMap contributors",
+      attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
       noWrap: true,
     }).addTo(map);
 
