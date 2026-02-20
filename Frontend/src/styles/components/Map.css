@@ -1,0 +1,709 @@
+/* Map Component Styles */
+
+.map-container {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  min-height: 500px;
+  overflow: hidden; /* Prevent map overflow */
+}
+
+.map-leaflet {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Ensure no map duplication */
+}
+
+/* Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1002;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebar-overlay-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Sliding Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.12);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1003;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-open {
+  transform: translateX(0);
+}
+
+/* Sidebar Header - Minimal */
+.sidebar-header-minimal {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-close {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  color: #6b7280;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #374151;
+}
+
+/* Professional Status Cards */
+.sidebar-section-compact {
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+}
+
+.status-info-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.status-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.status-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.status-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-icon.ships {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.status-icon.source {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.status-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.status-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.status-value-large {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.status-value-large.status-connected {
+  color: #059669;
+}
+
+.status-value-large.status-error {
+  color: #dc2626;
+}
+
+.loading-indicator,
+.error-indicator {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.loading-indicator {
+  background: rgba(251, 191, 36, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.error-indicator {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Professional Grid Controls */
+.grid-controls-professional {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.toggle-button-modern {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle-button-modern.toggle-on {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.toggle-button-modern.toggle-on:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.toggle-button-modern.toggle-off {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.toggle-button-modern.toggle-off:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.grid-step-control-modern {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.grid-step-control-modern label {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.grid-select-modern {
+  background: white;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.grid-select-modern:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Legend Grid Layout */
+.legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.legend-item-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #374151;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.legend-item-compact:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.legend-item-compact span:first-child {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.legend-item-compact span:last-child {
+  line-height: 1;
+}
+
+/* Sidebar Content - Remove scroll and improve spacing */
+.sidebar-content {
+  padding: 1rem 0;
+  overflow-y: visible;
+  height: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+  padding: 0 1rem 1rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.sidebar-section h4 {
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Sidebar Content */
+.sidebar-content {
+  padding: 1rem;
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.sidebar-section h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2f855a; /* Darker green */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Status Information */
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.status-value {
+  font-weight: 600;
+}
+
+.status-value.ships {
+  color: #2f855a;
+}
+
+.status-value.status-connected {
+  color: #2f855a;
+}
+
+.status-value.status-disconnected {
+  color: #d69e2e;
+}
+
+.status-value.status-error {
+  color: #c53030;
+}
+
+.status-note {
+  color: #718096;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+
+.status-row.loading {
+  color: #d69e2e;
+  justify-content: center;
+}
+
+.status-row.error {
+  color: #c53030;
+  justify-content: center;
+}
+
+/* Grid Controls */
+.grid-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.toggle-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-on {
+  background-color: #2f855a;
+  color: white;
+}
+
+.toggle-on:hover {
+  background-color: #276749;
+}
+
+.toggle-off {
+  background-color: #e5e7eb;
+  color: white;
+}
+
+.toggle-off:hover {
+  background-color: #718096;
+}
+
+.grid-step-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.grid-step-control label {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.grid-select {
+  background-color: #edf2f7;
+  color: #1a202c;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Refresh Button */
+.refresh-button-sidebar {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2b6cb0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.refresh-button-sidebar:hover {
+  background: #2c5282;
+}
+
+.refresh-button-sidebar:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.refresh-button-sidebar.refreshing {
+  background: #2f855a;
+}
+
+/* Circular animation for refresh button */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.refresh-button-sidebar.refreshing::before {
+  content: '';
+  animation: spin 1s linear infinite;
+}
+
+/* Loading overlay for map */
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1005;
+  color: #1a202c;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.map-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #2b6cb0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 1rem;
+}
+
+/* Legend */
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.legend-dot-cargo {
+  color: #2f855a;
+  font-size: 1.2rem;
+}
+
+.legend-dot-tanker {
+  color: #c53030;
+  font-size: 1.2rem;
+}
+
+.legend-dot-passenger {
+  color: #d69e2e;
+  font-size: 1.2rem;
+}
+
+.legend-dot-fishing {
+  color: #2b6cb0;
+  font-size: 1.2rem;
+}
+
+.legend-dot-tug {
+  color: #805ad5;
+  font-size: 1.2rem;
+}
+
+.legend-dot-other {
+  color: #718096;
+  font-size: 1.2rem;
+}
+
+/* Grid label styles */
+.grid-label {
+  background: transparent !important;
+  border: none !important;
+  color: #2b6cb0 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Loading overlay for map */
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1005;
+  color: #1a202c;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.map-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.3);
+  border-top: 4px solid #2b6cb0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 1rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Styles for route labels */
+.route-label-icon {
+  background-color: #007bff; /* Blue background */
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  border: 1px solid #ffffff; /* White border */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.route-label {
+  line-height: 1;
+}
+
+/* Styles for route tooltips */
+.route-start-tooltip {
+  background-color: #16a34a !important; /* Green background */
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.4) !important;
+}
+
+.route-start-tooltip .leaflet-tooltip-tip {
+  border-top-color: #16a34a !important;
+}
+
+.route-end-tooltip {
+  background-color: #dc2626 !important; /* Red background */
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4) !important;
+}
+
+.route-end-tooltip .leaflet-tooltip-tip {
+  border-top-color: #dc2626 !important;
+}
+
+.route-waypoint-tooltip {
+  background-color: #3b82f6 !important; /* Blue background */
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 50% !important;
+  padding: 2px 5px !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  min-width: 16px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.4) !important;
+}
+
+.route-waypoint-tooltip .leaflet-tooltip-tip {
+  border-top-color: #3b82f6 !important;
+}
+
+/* Custom styles for Leaflet popups with route colors */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px !important;
+}
+
+.leaflet-popup-tip {
+  border-radius: 2px !important;
+}

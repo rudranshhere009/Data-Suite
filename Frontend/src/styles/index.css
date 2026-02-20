@@ -1,0 +1,142 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Light theme variables */
+:root {
+  --color-bg-primary: #ffffff; /* White background */
+  --color-text-primary: #1f2937; /* Dark text */
+  --color-border-primary: #d1d5db; /* Light border */
+  --color-bg-secondary: #f3f4f6; /* Light gray background for secondary elements */
+  --color-text-secondary: #4b5563; /* Medium gray text */
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* Hamburger menu in header */
+.hamburger-menu-header {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hamburger-menu-header:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.hamburger-line-header {
+  width: 20px;
+  height: 2px;
+  background: var(--color-text-primary); /* Use theme variable */
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+/* Grid label styles for Leaflet map */
+.grid-label {
+  background: rgba(31, 41, 55, 0.7) !important; /* Darker background for labels */
+  color: #f3f4f6 !important; /* Lighter text for labels */
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  font: 11px/1.2 system-ui, sans-serif !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+/* Custom overrides */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+/* Prevent map duplication and set background */
+.leaflet-container {
+  background: #f0f0f0; /* Lighter map background */
+}
+
+/* Remove specific adjustments for dark mode, let Tailwind defaults handle it */
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 0.6s ease-out forwards;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft 0.6s ease-out forwards;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeInRight {
+  animation: fadeInRight 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}

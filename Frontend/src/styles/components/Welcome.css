@@ -1,0 +1,55 @@
+/* Welcome.css */
+
+.welcome-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #ffffff; /* White background */
+  border-radius: 20px;
+  margin-top: 2rem;
+  animation: fadeIn 1.5s ease-in-out;
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+}
+
+.welcome-content {
+  max-width: 800px;
+}
+
+.welcome-icon {
+  margin-bottom: 2rem;
+}
+
+.welcome-icon .material-icons {
+  font-size: 6rem;
+  color: #3a7bd5; /* Primary color */
+  text-shadow: 0 0 25px rgba(58, 123, 213, 0.3);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+.welcome-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #333; /* Dark text */
+  margin-bottom: 1rem;
+}
+
+.welcome-description {
+  font-size: 1.2rem;
+  color: #555; /* Medium-dark text */
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.welcome-instruction {
+  font-size: 1.1rem;
+  color: #3a7bd5; /* Primary color */
+  font-weight: 600;
+}

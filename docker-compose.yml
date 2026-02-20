@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      - FLASK_RUN_HOST=0.0.0.0
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./ships_with_dynamics_heading.csv:/app/ships_with_dynamics_heading.csv:ro
+    depends_on:
+      - db
+    networks:
+      - msisnet
+    restart: unless-stopped
+    # Expose port internally only for nginx proxy
+    expose:
+      - "5000"
+
+  frontend-builder:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    volumes:
+      - frontend-build:/shared
+    networks:
+      - msisnet
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: aisdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - msisnet
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - frontend-build:/usr/share/nginx/html
+    depends_on:
+      - backend
+      - frontend-builder
+    networks:
+      - msisnet
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  frontend-build:
+
+networks:
+  msisnet:
+    driver: bridge

@@ -1,0 +1,11 @@
+psycopg[binary]==3.2.3
+SQLAlchemy==2.0.32
+pandas==2.2.3
+python-dateutil==2.9.0.post0
+flask
+flask_sqlalchemy
+flask-cors
+python-dotenv
+PyJWT==2.8.0
+flask_jwt_extended
+statsmodels
