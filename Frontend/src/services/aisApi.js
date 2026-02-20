@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Production: always use nginx proxy
-const API_BASE_URL = '/api';
+// Use explicit backend URL in cloud deployments; fallback to local proxy.
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 
 // Create axios instance with default configuration
 const aisApi = axios.create({
