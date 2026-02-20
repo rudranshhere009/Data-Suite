@@ -80,7 +80,7 @@ input, textarea {
 
 /* Prevent map duplication and set background */
 .leaflet-container {
-  background: #f0f0f0;
+  background: #020b1f;
 }
 
 /* Remove specific adjustments for dark mode, let Tailwind defaults handle it */

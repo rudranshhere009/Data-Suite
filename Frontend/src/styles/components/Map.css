@@ -426,6 +426,32 @@
   box-shadow: none !important;
 }
 
+/* Popup theme for route tracker markers */
+.leaflet-popup.route-popup-clean .leaflet-popup-content-wrapper {
+  background: #020617 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(51, 65, 85, 0.9) !important;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.65) !important;
+  border-radius: 10px !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup.route-popup-clean .leaflet-popup-content {
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  color: #ffffff !important;
+}
+
+.leaflet-popup.route-popup-clean .leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+.leaflet-popup.route-popup-clean .leaflet-popup-tip {
+  background: #020617 !important;
+  border: 1px solid rgba(51, 65, 85, 0.9) !important;
+  box-shadow: none !important;
+}
+
 /* Playback marker visuals */
 .route-track-ship-marker {
   background: transparent !important;
@@ -474,4 +500,29 @@
   .legend-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Make required tile attribution subtle but readable and theme-aligned */
+.leaflet-control-attribution {
+  background: rgba(2, 6, 23, 0.72) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #94a3b8 !important;
+  border: 1px solid rgba(51, 65, 85, 0.55) !important;
+  border-radius: 8px 0 0 0 !important;
+  padding: 2px 8px !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+  opacity: 0.9;
+}
+
+.leaflet-control-attribution a {
+  color: #67e8f9 !important;
+  text-decoration: none;
+}
+
+.leaflet-control-attribution a:hover {
+  color: #a5f3fc !important;
+  text-decoration: underline;
 }

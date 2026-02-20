@@ -16,7 +16,7 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
   const [error, setError] = useState(null);
   const [apiHealth, setApiHealth] = useState(null);
   const [gridStep, setGridStep] = useState(5); // Default 5° grid
-  const [showGrid, setShowGrid] = useState(true); // Grid on/off toggle
+  const [showGrid, setShowGrid] = useState(false); // Grid on/off toggle (default OFF)
 
   // Helper functions for grid
   const isNearMultiple = (value, step) => Math.abs(value - Math.round(value / step) * step) < 1e-6;
@@ -119,17 +119,21 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
 
   // Simple ship icon - Optimized for large datasets
   const makeShipIcon = (color, heading = 0) => {
-    // For large datasets, use simpler markers for better performance
+    // Larger ship-style marker with heading direction.
     const html = `
-      <div style="width:16px;height:16px;border-radius:50%;background:${color};border:1px solid rgba(0,0,0,0.3);transform:rotate(${heading}deg)">
-        <div style="width:4px;height:4px;background:#fff;border-radius:50%;margin:6px auto;"></div>
+      <div style="position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transform:rotate(${heading}deg);">
+        <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.2;"></div>
+        <div style="position:relative;width:24px;height:24px;border-radius:50%;background:linear-gradient(145deg, ${color}, #0f172a);border:2px solid rgba(255,255,255,0.75);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.35);">
+          <span style="font-size:12px;line-height:1;color:#fff;">⛴</span>
+        </div>
+        <div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid ${color};filter:drop-shadow(0 1px 1px rgba(0,0,0,0.35));"></div>
       </div>`;
     return L.divIcon({
       className: "",
       html,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8],
-      popupAnchor: [0, -8]
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -14]
     });
   };
 
@@ -239,18 +243,22 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     const map = L.map("map", {
       center: [15.0, 75.0], // Indian Ocean region
       zoom: 5,
-      minZoom: 2,
+      minZoom: 3,
       maxZoom: 18,
       preferCanvas: true,
-      worldCopyJump: true,
+      worldCopyJump: false,
       crs: L.CRS.EPSG3857, // Explicit Web Mercator
+      maxBounds: [[-85, -180], [85, 180]],
+      maxBoundsViscosity: 1.0,
     });
 
     mapRef.current = map;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18,
-      attribution: "&copy; OpenStreetMap contributors",
+    // Nautical-friendly dark blue style.
+    L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+      maxZoom: 20,
+      attribution: "&copy; Stadia Maps & OpenMapTiles & OpenStreetMap contributors",
+      noWrap: true,
     }).addTo(map);
 
     // Initialize grid layer
