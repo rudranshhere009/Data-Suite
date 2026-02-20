@@ -16,6 +16,12 @@ db_name_match = re.search(r'/([a-zA-Z0-9_]+)$', DATABASE_URL)
 db_name = db_name_match.group(1) if db_name_match else None
 
 def ensure_database_exists():
+    # Managed DB providers already create the DB. Keep creation opt-in for local use.
+    should_create = os.getenv("CREATE_DATABASE_IF_MISSING", "false").lower() == "true"
+    if not should_create:
+        print("Skipping database creation check (CREATE_DATABASE_IF_MISSING=false).")
+        return
+
     # Connect to default 'postgres' database to check/create target db
     default_url = re.sub(r'/[a-zA-Z0-9_]+$', '/postgres', DATABASE_URL)
     default_engine = create_engine(default_url)
@@ -28,7 +34,6 @@ def ensure_database_exists():
         else:
             print(f"Database '{db_name}' already exists.")
 
-ensure_database_exists()
 engine = create_engine(DATABASE_URL)
 
 def load_csv_to_db(csv_path, app=None):

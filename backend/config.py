@@ -10,6 +10,22 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 
+
+def get_allowed_origins():
+    """
+    Build CORS allow-list from env with local defaults.
+    Use comma-separated ALLOWED_ORIGINS for deployed frontend URLs.
+    """
+    raw = os.getenv("ALLOWED_ORIGINS", "")
+    env_origins = [o.strip() for o in raw.split(",") if o.strip()]
+    local_defaults = [
+        "http://localhost",
+        "http://localhost:80",
+        "http://localhost:5173",
+        "http://localhost:5174",
+    ]
+    return env_origins or local_defaults
+
 db = SQLAlchemy()
 
 def resolve_csv_path():
@@ -30,22 +46,24 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = SECRET_KEY
 
-    # Enable CORS for production nginx proxy and development
-    # In production, requests come through nginx on same origin
-    # In development, allow localhost origins
-    CORS(app, 
-         origins=["http://localhost", "http://localhost:80", "http://localhost:5173", "http://localhost:5174"], 
-         supports_credentials=False,
-         allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    # CORS: set ALLOWED_ORIGINS in production (e.g. Vercel URL).
+    CORS(
+        app,
+        origins=get_allowed_origins(),
+        supports_credentials=False,
+        allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    )
 
     db.init_app(app)
 
-    # Ensure database and table exist on app startup
+    # Ensure tables exist on app startup
     from utils.db_loader import ensure_database_exists
     from sqlalchemy import inspect, create_engine, text
     engine = create_engine(DATABASE_URL)
     with app.app_context():
+        # Optional DB creation is disabled by default for managed services (Render/Supabase).
+        ensure_database_exists()
         # Import models so SQLAlchemy knows about them
         import models
         inspector = inspect(engine)
