@@ -35,7 +35,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 390px;
+  width: 460px;
   height: 100vh;
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
   backdrop-filter: blur(18px);
@@ -555,7 +555,7 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: min(92vw, 360px);
+    width: min(96vw, 400px);
   }
 
   .sidebar-content {
