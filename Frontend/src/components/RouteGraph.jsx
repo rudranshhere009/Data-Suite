@@ -194,10 +194,6 @@ const RouteGraph = ({ routeData, shipDetails }) => {
           <h3 className="text-2xl md:text-3xl font-extrabold text-slate-100">
             Route Analysis for {shipDetails?.SHIP_NAME || 'Unknown Ship'}
           </h3>
-          <div className="flex items-center gap-2 text-xs md:text-sm">
-            <span className="px-2.5 py-1 rounded-full border border-cyan-700 bg-cyan-950/40 text-cyan-300">Live Route Analytics</span>
-            <span className="px-2.5 py-1 rounded-full border border-violet-700 bg-violet-950/40 text-violet-300">Visual Mode</span>
-          </div>
         </div>
       </div>
       

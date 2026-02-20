@@ -1,6 +1,6 @@
 ﻿import React, { useMemo, useState } from 'react';
 
-const ShipProfile = ({ shipDetails, routeData, onShowMap, onShowGraph, onShowAnomaly }) => {
+const ShipProfile = ({ shipDetails, routeData, onShowMap, onShowGraph, onShowAnomaly, onShowTrack }) => {
   const [showAllRoutes, setShowAllRoutes] = useState(false);
   const latestVisibleCount = 5;
 
@@ -79,6 +79,14 @@ const ShipProfile = ({ shipDetails, routeData, onShowMap, onShowGraph, onShowAno
             className="flex items-center px-8 py-3 bg-gradient-to-r from-red-600 to-rose-500 text-white font-semibold text-lg rounded-full shadow-lg hover:from-red-500 hover:to-rose-400 transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
           >
             <span className="material-icons mr-2">error</span> Show Anomaly
+          </button>
+        )}
+        {routeData && routeData.length > 0 && (
+          <button
+            onClick={onShowTrack}
+            className="flex items-center px-8 py-3 bg-gradient-to-r from-cyan-600 to-blue-500 text-white font-semibold text-lg rounded-full shadow-lg hover:from-cyan-500 hover:to-blue-400 transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-75"
+          >
+            <span className="material-icons mr-2">navigation</span> Track
           </button>
         )}
       </div>

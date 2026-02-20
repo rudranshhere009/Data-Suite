@@ -6,6 +6,61 @@ from models import db
 ships_bp = Blueprint("ships", __name__)
 CORS(ships_bp)
 
+
+@ships_bp.route("/suggest", methods=["GET"])
+def suggest_ships():
+    q = (request.args.get("q") or "").strip()
+    limit = request.args.get("limit", default=6, type=int)
+    limit = max(1, min(limit, 12))
+
+    if len(q) < 1:
+        return jsonify([])
+
+    like_starts = f"{q}%"
+    like_contains = f"%{q}%"
+
+    query = text("""
+        WITH latest AS (
+            SELECT DISTINCT ON (mmsi)
+                mmsi,
+                ship_name,
+                rec_time
+            FROM ais_data
+            WHERE mmsi IS NOT NULL
+              AND ship_name IS NOT NULL
+              AND TRIM(ship_name) <> ''
+            ORDER BY mmsi, rec_time DESC
+        )
+        SELECT
+            CAST(mmsi AS TEXT) AS mmsi,
+            ship_name
+        FROM latest
+        WHERE ship_name ILIKE :starts
+           OR CAST(mmsi AS TEXT) LIKE :starts
+           OR ship_name ILIKE :contains
+        ORDER BY
+            CASE WHEN ship_name ILIKE :starts THEN 0
+                 WHEN CAST(mmsi AS TEXT) LIKE :starts THEN 1
+                 ELSE 2 END,
+            ship_name
+        LIMIT :limit
+    """)
+
+    result = db.session.execute(query, {
+        "starts": like_starts,
+        "contains": like_contains,
+        "limit": limit
+    }).mappings().all()
+
+    return jsonify([
+        {
+            "mmsi": row["mmsi"],
+            "ship_name": row["ship_name"],
+            "label": f"{row['ship_name']} ({row['mmsi']})"
+        }
+        for row in result
+    ])
+
 # Get current ship positions for map display
 @ships_bp.route("/", methods=["GET"])
 def get_ships():

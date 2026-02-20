@@ -171,6 +171,15 @@ export const getShipRoute = async ({ mmsi }) => {
   }
 };
 
+export const getShipSuggestions = async ({ q, limit = 6 }) => {
+  try {
+    const response = await aisApi.get('/ships/suggest', { params: { q, limit } });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to fetch ship suggestions');
+  }
+};
+
 // ===== TRENDS API ENDPOINTS =====
 
 /**
