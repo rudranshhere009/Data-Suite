@@ -231,6 +231,8 @@ dist
 # Gatsby files
 .cache/
 public
+!Frontend/public/
+!Frontend/public/**
 
 # Vite build tool
 dist/
