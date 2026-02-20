@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 // Create Auth Context
 const AuthContext = createContext();
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 
 // Custom hook to use auth context
 export const useAuth = () => {
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
       if (token && userData) {
         try {
           // Verify token with backend
-          const response = await fetch('/api/auth/verify', {
+          const response = await fetch(`${API_BASE_URL}/auth/verify`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

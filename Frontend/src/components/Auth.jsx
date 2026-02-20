@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import '../styles/components/Auth.css';
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
+
 const Auth = ({ onAuthSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,7 +37,7 @@ const Auth = ({ onAuthSuccess }) => {
     setSuccessMessage('');
 
     try {
-      const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/signin';
+      const endpoint = isSignup ? `${API_BASE_URL}/auth/signup` : `${API_BASE_URL}/auth/signin`;
       const payload = isSignup 
         ? { username: formData.username, email: formData.email, password: formData.password }
         : { identifier: formData.username, password: formData.password };
