@@ -18,10 +18,13 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh;
+  padding: 1.25rem;
   font-family: var(--font-body);
   background: linear-gradient(45deg, #1a1a1a, #3a3a3a);
   background-image: url('/auth-bg.jpg');
-  background-size: 150% 150%;
+  background-size: cover;
+  background-repeat: no-repeat;
   background-position: center;
   position: relative;
   overflow: hidden;
@@ -235,4 +238,65 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    align-items: flex-start;
+    padding: 1rem 0.75rem 1.25rem;
+    background-size: 220% auto;
+    animation-duration: 28s;
+  }
+
+  .auth-card {
+    max-width: 100%;
+    border-radius: 16px;
+    padding: 1.4rem 1rem;
+  }
+
+  .auth-header {
+    margin-bottom: 1.1rem;
+  }
+
+  .auth-header h1 {
+    font-size: 2.15rem;
+    line-height: 1.1;
+  }
+
+  .auth-header p {
+    font-size: 1.05rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.95rem;
+  }
+
+  .form-group input {
+    font-size: 16px;
+    padding: 0.95rem 0.95rem 0.95rem 2.8rem;
+  }
+
+  .submit-button {
+    font-size: 1rem;
+    padding: 0.95rem;
+  }
+
+  .auth-toggle {
+    margin-top: 1.15rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .auth-container {
+    padding: 0.75rem 0.55rem 1rem;
+    background-size: 260% auto;
+  }
+
+  .auth-card {
+    padding: 1.15rem 0.8rem;
+  }
+
+  .auth-header h1 {
+    font-size: 1.9rem;
+  }
 }
