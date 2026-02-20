@@ -117,25 +117,21 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     return "#6b7280"; // Default Gray
   };
 
-  // Ship icon - clear vessel silhouette with heading direction.
+  // Ship icon - large location pin marker.
   const makeShipIcon = (color, heading = 0) => {
     const html = `
-      <div style="position:relative;width:46px;height:46px;cursor:pointer;transform:rotate(${heading}deg);">
-        <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.18;box-shadow:0 0 0 1px rgba(255,255,255,0.1),0 0 18px ${color};"></div>
-        <svg width="46" height="46" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;filter:drop-shadow(0 6px 10px rgba(0,0,0,0.45));">
-          <path d="M23 6 L29 16 L26 31 L20 31 L17 16 Z" fill="${color}" stroke="rgba(255,255,255,0.9)" stroke-width="1.7"/>
-          <rect x="19.3" y="16.5" width="7.4" height="7.2" rx="1.8" fill="#e2e8f0" />
-          <rect x="21.1" y="13.2" width="3.8" height="3.8" rx="1" fill="#f8fafc" />
-          <path d="M18 31.2 Q23 35 28 31.2" fill="#0f172a" stroke="${color}" stroke-width="2.2"/>
-          <circle cx="23" cy="10.5" r="1.4" fill="#f8fafc"/>
-        </svg>
+      <div style="position:relative;width:52px;height:52px;cursor:pointer;transform:rotate(${heading}deg);display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.18;box-shadow:0 0 0 1px rgba(255,255,255,0.14),0 0 20px ${color};"></div>
+        <div style="position:relative;width:28px;height:28px;background:${color};border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 7px 14px rgba(0,0,0,0.45);border:2px solid rgba(255,255,255,0.78);">
+          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:9px;height:9px;background:#e2e8f0;border-radius:50%;"></div>
+        </div>
       </div>`;
     return L.divIcon({
       className: "ship-location-marker",
       html,
-      iconSize: [46, 46],
-      iconAnchor: [23, 23],
-      popupAnchor: [0, -20]
+      iconSize: [52, 52],
+      iconAnchor: [26, 40],
+      popupAnchor: [0, -34]
     });
   };
   // Normalize ship data from different API formats - Optimized for large datasets
