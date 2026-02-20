@@ -333,6 +333,7 @@
 .legend-dot-passenger { color: #f59e0b; }
 .legend-dot-fishing { color: #3b82f6; }
 .legend-dot-tug { color: #8b5cf6; }
+.legend-dot-military { color: #37474f; }
 .legend-dot-other { color: #94a3b8; }
 
 /* Loading overlay for map */

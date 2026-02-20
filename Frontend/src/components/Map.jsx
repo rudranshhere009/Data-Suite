@@ -117,10 +117,10 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     return "#6b7280"; // Default Gray
   };
 
-  // Ship icon - large location pin marker.
+  // Ship icon - large upright location pin marker.
   const makeShipIcon = (color, heading = 0) => {
     const html = `
-      <div style="position:relative;width:52px;height:52px;cursor:pointer;transform:rotate(${heading}deg);display:flex;align-items:center;justify-content:center;">
+      <div style="position:relative;width:52px;height:52px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
         <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.18;box-shadow:0 0 0 1px rgba(255,255,255,0.14),0 0 20px ${color};"></div>
         <div style="position:relative;width:28px;height:28px;background:${color};border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 7px 14px rgba(0,0,0,0.45);border:2px solid rgba(255,255,255,0.78);">
           <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(45deg);width:9px;height:9px;background:#e2e8f0;border-radius:50%;"></div>
@@ -625,27 +625,31 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
                   <div className="legend-grid">
                     <div className="legend-item-compact">
                       <span className="legend-dot-cargo">●</span>
-                      <span>Cargo</span>
+                      <span>Cargo - Green</span>
                     </div>
                     <div className="legend-item-compact">
                       <span className="legend-dot-tanker">●</span>
-                      <span>Tanker</span>
+                      <span>Tanker/Oil - Red</span>
                     </div>
                     <div className="legend-item-compact">
                       <span className="legend-dot-passenger">●</span>
-                      <span>Passenger</span>
+                      <span>Passenger/Cruise - Orange</span>
                     </div>
                     <div className="legend-item-compact">
                       <span className="legend-dot-fishing">●</span>
-                      <span>Fishing</span>
+                      <span>Fishing - Blue</span>
                     </div>
                     <div className="legend-item-compact">
                       <span className="legend-dot-tug">●</span>
-                      <span>Service</span>
+                      <span>Service/Tug - Purple</span>
+                    </div>
+                    <div className="legend-item-compact">
+                      <span className="legend-dot-military">●</span>
+                      <span>Military/Naval - Dark Gray</span>
                     </div>
                     <div className="legend-item-compact">
                       <span className="legend-dot-other">●</span>
-                      <span>Other</span>
+                      <span>Other - Gray</span>
                     </div>
                   </div>
                 </div>
