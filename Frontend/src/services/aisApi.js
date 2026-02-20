@@ -80,6 +80,42 @@ export const getSpeedForecast = async (payload) => {
   }
 };
 
+export const getForecastOverview = async (date) => {
+  try {
+    const response = await aisApi.get('/traffic/forecast_overview', { params: { date } });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to fetch forecast overview');
+  }
+};
+
+export const getTimeWindowIntensity = async (date) => {
+  try {
+    const response = await aisApi.get('/traffic/time_window_intensity', { params: { date } });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to fetch time window intensity');
+  }
+};
+
+export const getSpeedRiskSummary = async ({ mmsi, ship_name }) => {
+  try {
+    const response = await aisApi.get('/traffic/speed_risk_summary', { params: { mmsi, ship_name } });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to fetch speed risk summary');
+  }
+};
+
+export const getRandomForecastSeed = async () => {
+  try {
+    const response = await aisApi.get('/traffic/random_seed');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to fetch random ship seed');
+  }
+};
+
 /**
  * Get current ship positions for map display
  * @param {Object} params - Query parameters
@@ -200,6 +236,15 @@ export const getArrivals = async () => {
     return response.data;
   } catch (error) {
     throw new Error(`Failed to fetch port arrivals: ${error.message}`);
+  }
+};
+
+export const getArrivalInsights = async (limit = 8) => {
+  try {
+    const response = await aisApi.get('/trends/arrivals-insights', { params: { limit } });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to fetch arrival insights');
   }
 };
 

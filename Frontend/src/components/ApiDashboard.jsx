@@ -5,7 +5,7 @@ import {
   getFishingSeasonality,
   getCommercialRatio,
   getMonthlyShipTotal,
-  getArrivals
+  getArrivalInsights
 } from '../services/aisApi';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Pie, Doughnut, Bar } from 'react-chartjs-2';
@@ -45,7 +45,7 @@ const ApiDashboard = () => {
         getFishingSeasonality(),
         getCommercialRatio(),
         getMonthlyShipTotal(),
-        getArrivals()
+        getArrivalInsights(8)
       ]);
 
       const shipsData = ships.status === 'fulfilled' ? ships.value : [];
@@ -112,7 +112,7 @@ const ApiDashboard = () => {
       });
     }, 1000);
     return () => clearInterval(tick);
-  }, []);
+  }, [autoRefresh]);
 
   const exportSnapshot = () => {
     const snapshot = {
@@ -171,6 +171,13 @@ const ApiDashboard = () => {
       backgroundColor: '#0ea5e9'
     }]
   };
+  const totalTypeCount = filteredShipTypes.reduce((sum, item) => sum + (item.count || 0), 0);
+  const topType = filteredShipTypes[0];
+  const topTypeShare = topType ? ((topType.count || 0) / Math.max(totalTypeCount, 1)) * 100 : 0;
+  const operationalAlerts = [];
+  if ((stats.monthlyTotal?.total_records || 0) < 5000) operationalAlerts.push("Low record volume detected for deep trend analysis.");
+  if ((stats.arrivals || []).length < 5) operationalAlerts.push("Destination diversity is limited.");
+  if (healthScore < 60) operationalAlerts.push("Data health score below 60%, investigate ingestion quality.");
 
   if (stats.loading) {
     return (
@@ -261,16 +268,59 @@ const ApiDashboard = () => {
           <div className="h-72"><Bar data={fishingBarData} options={{ responsive: true, maintainAspectRatio: false }} /></div>
         </div>
       </div>
+      <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-5">
+        <div className="bg-slate-900/90 border border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl animate-fadeInUp">
+          <h3 className="text-lg font-bold text-slate-100 mb-3">Top Ship Types Ranking</h3>
+          <div className="space-y-2">
+            {filteredShipTypes.slice(0, 8).map((item, idx) => {
+              const pct = ((item.count || 0) / Math.max(totalTypeCount, 1)) * 100;
+              return (
+                <div key={`${item.ship_type}-${idx}`} className="bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-200 truncate pr-3">{idx + 1}. {item.ship_type || 'Unknown'}</span>
+                    <span className="text-cyan-300 font-semibold">{(item.count || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 rounded bg-slate-700">
+                    <div className="h-1.5 rounded bg-cyan-400" style={{ width: `${Math.min(100, pct)}%` }}></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {topType && (
+            <p className="mt-3 text-xs text-slate-400">
+              Dominant type: <span className="text-slate-200 font-semibold">{topType.ship_type}</span> ({topTypeShare.toFixed(1)}%)
+            </p>
+          )}
+        </div>
+        <div className="bg-slate-900/90 border border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl animate-fadeInUp">
+          <h3 className="text-lg font-bold text-slate-100 mb-3">Operational Alerts</h3>
+          {operationalAlerts.length === 0 ? (
+            <div className="bg-emerald-950/35 border border-emerald-700 rounded-lg p-3 text-emerald-200 text-sm">
+              All core monitoring indicators are healthy.
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {operationalAlerts.map((alert, idx) => (
+                <div key={idx} className="bg-amber-950/35 border border-amber-700 rounded-lg p-3 text-amber-200 text-sm">
+                  {alert}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       <div className="mt-6 bg-slate-900/90 border border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl animate-fadeInUp">
         <h3 className="text-lg font-bold text-slate-100 mb-3">Top Destinations (Arrivals)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {(stats.arrivals || []).slice(0, 8).map((row, idx) => (
             <div key={idx} className="flex items-center justify-between bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2">
               <span className="text-slate-200 text-sm truncate pr-3">{row.destination || 'Unknown'}</span>
-              <span className="text-cyan-300 font-semibold text-sm">{(row.arrivals || 0).toLocaleString()}</span>
+              <span className="text-cyan-300 font-semibold text-sm">{(row.active_ships || 0).toLocaleString()} active</span>
             </div>
           ))}
         </div>
+        <p className="mt-3 text-xs text-slate-400">Values show latest active ships by destination from live backend data.</p>
       </div>
 
       <div className="text-center text-slate-400 text-sm mt-8">Last updated: {stats.lastUpdate}</div>

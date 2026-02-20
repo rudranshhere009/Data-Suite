@@ -121,7 +121,7 @@ const RoutesDashboard = ({
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 animate-fadeIn rounded-2xl border border-slate-800 shadow-2xl">
+    <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 animate-fadeIn rounded-2xl border border-slate-800 shadow-2xl font-sans">
       <div className="relative mb-8 bg-slate-900/90 backdrop-blur border border-slate-700 shadow-xl rounded-2xl overflow-hidden">
         <div className="flex flex-col md:flex-row items-stretch">
         <input
@@ -173,7 +173,7 @@ const RoutesDashboard = ({
       {!loading && !shipDetails && !error && <Welcome />}
 
       {showShipProfile && shipDetails && (
-        <div className="mt-8 p-4 md:p-6 bg-slate-900/90 border border-slate-700 rounded-2xl shadow-xl animate-fadeInUp">
+        <div className="mt-8 p-3 md:p-5 bg-slate-900/90 border border-slate-700 rounded-2xl shadow-xl animate-fadeInUp">
           <ShipProfile 
             shipDetails={shipDetails} 
             routeData={routeData} 
@@ -186,21 +186,23 @@ const RoutesDashboard = ({
 
       {/* Map Pop-up Modal */}
       {showMapPopup && routeData && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn p-2 md:p-4">
-          <div className="bg-white p-4 md:p-6 rounded-xl shadow-2xl w-full max-w-4xl h-[92vh] md:h-5/6 relative transform transition-all duration-300 ease-in-out scale-95 animate-scaleIn">
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm animate-fadeIn" onClick={handleCloseMapPopup}>
+          <div className="absolute top-0 right-0 h-screen w-full md:w-[96vw] lg:w-[86vw] bg-slate-900 border-l border-slate-700 shadow-2xl animate-slideInRight" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={handleCloseMapPopup}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold transition-colors duration-200"
+              className="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors duration-200"
               aria-label="Close Map"
             >
-              &times;
+              Close
             </button>
-            <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-gray-800 border-b pb-2">Ship Route Map</h3>
-            <div className="w-full h-[calc(100%-5rem)] rounded-lg overflow-hidden">
+            <div className="h-full p-4 md:p-6">
+              <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-slate-100 border-b border-slate-700 pb-2">Ship Route Map</h3>
+            <div className="w-full h-[calc(100%-4.5rem)] rounded-xl overflow-hidden border border-slate-700">
               <Map 
                 routeData={routeData} 
                 shipDetails={shipDetails} 
               />
+            </div>
             </div>
           </div>
         </div>
@@ -208,22 +210,22 @@ const RoutesDashboard = ({
 
       {/* Graph Pop-up Modal (New) */}
       {showGraphPopup && routeData && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-2">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl h-[95vh] relative overflow-hidden">
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-t-xl">
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm animate-fadeIn" onClick={handleCloseGraphPopup}>
+          <div className="absolute top-0 right-0 h-screen w-full md:w-[96vw] lg:w-[86vw] bg-slate-900 border-l border-slate-700 shadow-2xl animate-slideInRight overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white border-b border-slate-700">
               <h3 className="text-base md:text-xl font-bold flex items-center">
                 <span className="material-icons mr-2">analytics</span>
                 Ship Route Analytics Dashboard
               </h3>
               <button
                 onClick={handleCloseGraphPopup}
-                className="text-white hover:text-gray-300 text-2xl font-bold transition-colors duration-200 p-1 hover:bg-white hover:bg-opacity-20 rounded"
+                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors duration-200"
                 aria-label="Close Graph"
               >
-                &times;
+                Close
               </button>
             </div>
-            <div className="h-[calc(100%-4rem)] overflow-y-auto">
+            <div className="h-[calc(100%-4rem)] overflow-y-auto bg-slate-950">
               <RouteGraph 
                 routeData={routeData} 
                 shipDetails={shipDetails} 
@@ -235,39 +237,41 @@ const RoutesDashboard = ({
 
       {/* Anomaly Pop-up Modal (New) */}
       {showAnomalyPopup && routeData && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn p-2 md:p-4">
-          <div className="bg-white p-4 md:p-6 rounded-xl shadow-2xl w-full max-w-4xl h-[92vh] md:h-5/6 relative transform transition-all duration-300 ease-in-out scale-95 animate-scaleIn">
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm animate-fadeIn" onClick={handleCloseAnomalyPopup}>
+          <div className="absolute top-0 right-0 h-screen w-full md:w-[96vw] lg:w-[86vw] bg-slate-900 border-l border-slate-700 shadow-2xl animate-slideInRight" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={handleCloseAnomalyPopup}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold transition-colors duration-200"
+              className="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors duration-200"
               aria-label="Close Anomaly"
             >
-              &times;
+              Close
             </button>
-            <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-gray-800 border-b pb-2">Destination Change Anomalies</h3>
-            <div className="w-full h-[calc(100%-5rem)] rounded-lg overflow-auto">
+            <div className="h-full p-4 md:p-6">
+            <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-slate-100 border-b border-slate-700 pb-2">Destination Change Anomalies</h3>
+            <div className="w-full h-[calc(100%-4.5rem)] rounded-xl border border-slate-700 overflow-auto bg-slate-950/40">
               {getAnomalies().length > 0 ? (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-slate-700">
+                  <thead className="bg-slate-800/70">
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From Destination</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To Destination</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">Timestamp</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">From Destination</th>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-slate-300 uppercase tracking-wider">To Destination</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="divide-y divide-slate-700">
                     {getAnomalies().map((anomaly, index) => (
-                      <tr key={index} className={index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100'}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{new Date(anomaly.timestamp).toLocaleString()}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{anomaly.from || 'N/A'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{anomaly.to || 'N/A'}</td>
+                      <tr key={index} className={index % 2 === 0 ? 'bg-slate-900/40 hover:bg-slate-800/60' : 'bg-slate-900/10 hover:bg-slate-800/50'}>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-100">{new Date(anomaly.timestamp).toLocaleString()}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-300">{anomaly.from || 'N/A'}</td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-slate-300">{anomaly.to || 'N/A'}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <p className="text-center text-gray-600 p-8">No destination changes found in the available route history.</p>
+                <p className="text-center text-slate-400 p-8">No destination changes found in the available route history.</p>
               )}
+            </div>
             </div>
           </div>
         </div>
