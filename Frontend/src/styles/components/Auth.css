@@ -23,7 +23,7 @@
   font-family: var(--font-body);
   background: linear-gradient(45deg, #1a1a1a, #3a3a3a);
   background-image: url('/auth-bg.jpg');
-  background-size: cover;
+  background-size: 145% 145%;
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
@@ -43,9 +43,11 @@
 }
 
 @keyframes move-background {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% { background-position: 8% 46%; }
+  25% { background-position: 82% 54%; }
+  50% { background-position: 62% 84%; }
+  75% { background-position: 18% 26%; }
+  100% { background-position: 8% 46%; }
 }
 
 .auth-card {
