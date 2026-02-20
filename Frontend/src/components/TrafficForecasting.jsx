@@ -33,6 +33,9 @@ const TrafficForecasting = () => {
   const [speedResult, setSpeedResult] = useState(null);
   const [speedLoading, setSpeedLoading] = useState(false);
   const [speedError, setSpeedError] = useState(null);
+  const today = new Date().toISOString().slice(0, 10);
+  const inThreeDays = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10);
+  const inSevenDays = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
 
   // Fetch risk by datetime
   const fetchRiskByDatetime = async () => {
@@ -156,9 +159,61 @@ const TrafficForecasting = () => {
     };
   };
 
+  const exportForecastReport = () => {
+    const report = {
+      generated_at: new Date().toISOString(),
+      traffic: trafficResult,
+      speed: speedResult,
+      risk_by_datetime: riskDatetimeResult,
+      risk_by_ship: riskShipResult
+    };
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `forecast-report-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const trafficReached = trafficResult?.totals?.reached || 0;
+  const trafficTransit = trafficResult?.totals?.in_transit || 0;
+  const avgPredSpeed = speedResult?.data?.length
+    ? speedResult.data.reduce((sum, v) => sum + v, 0) / speedResult.data.length
+    : 0;
+  const riskEvents =
+    (riskShipResult?.risk_dates?.length || 0) +
+    (riskDatetimeResult?.details?.length || 0);
+
   return (
     <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 rounded-2xl border border-slate-800 shadow-2xl">
-      <h2 className="text-2xl md:text-3xl font-extrabold mb-6 md:mb-8 tracking-tight text-center animate-fadeInDown">Forecasting Dashboard</h2>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-center md:text-left animate-fadeInDown">Forecasting Dashboard</h2>
+        <button
+          onClick={exportForecastReport}
+          className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-semibold text-white transition"
+        >
+          Export Forecast Report
+        </button>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-3">
+          <p className="text-xs text-slate-400">Reached</p>
+          <p className="text-xl font-bold text-cyan-300">{trafficReached}</p>
+        </div>
+        <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-3">
+          <p className="text-xs text-slate-400">In Transit</p>
+          <p className="text-xl font-bold text-amber-300">{trafficTransit}</p>
+        </div>
+        <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-3">
+          <p className="text-xs text-slate-400">Avg Predicted Speed</p>
+          <p className="text-xl font-bold text-emerald-300">{avgPredSpeed ? `${avgPredSpeed.toFixed(2)} kn` : '--'}</p>
+        </div>
+        <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-3">
+          <p className="text-xs text-slate-400">Risk Events</p>
+          <p className="text-xl font-bold text-rose-300">{riskEvents}</p>
+        </div>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
         
         {/* Traffic Prediction Card */}
@@ -171,6 +226,11 @@ const TrafficForecasting = () => {
             onKeyDown={e => { if (e.key === 'Enter' && trafficDate) fetchTrafficPrediction(); }}
             className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
+          <div className="w-full flex gap-2 mb-3">
+            <button type="button" onClick={() => setTrafficDate(today)} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">Today</button>
+            <button type="button" onClick={() => setTrafficDate(inThreeDays)} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">+3 Days</button>
+            <button type="button" onClick={() => setTrafficDate(inSevenDays)} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">+7 Days</button>
+          </div>
           <button
             onClick={fetchTrafficPrediction}
             className="bg-blue-600 text-white px-4 py-2 rounded font-medium shadow hover:bg-blue-700 transition mb-3 w-full text-sm"
@@ -203,6 +263,10 @@ const TrafficForecasting = () => {
             onKeyDown={e => { if (e.key === 'Enter' && speedMmsi && speedDays) fetchSpeedForecast(); }}
             className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
+          <div className="w-full flex gap-2 mb-3">
+            <button type="button" onClick={() => setSpeedMmsi('123456789')} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">Use Demo MMSI</button>
+            <button type="button" onClick={() => setSpeedDays('7')} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">7-Day Window</button>
+          </div>
           <input
             type="number"
             min={1}
@@ -271,6 +335,10 @@ const TrafficForecasting = () => {
             onChange={e => setRiskShipName(e.target.value)}
             className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
+          <div className="w-full flex gap-2 mb-3">
+            <button type="button" onClick={() => setRiskShipName('Victoria')} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">Use Demo Name</button>
+            <button type="button" onClick={() => { setRiskDate(today); setRiskTime('12:00'); }} className="flex-1 text-xs bg-slate-800 border border-slate-600 rounded py-1.5">Set Today Noon</button>
+          </div>
           <input
             type="date"
             value={riskDate}
@@ -319,6 +387,9 @@ const TrafficForecasting = () => {
             onKeyDown={e => { if (e.key === 'Enter' && riskShipOnlyName) fetchRiskByShip(); }}
             className="border border-slate-600 rounded px-3 py-2 mb-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm caret-blue-600 bg-slate-800 text-slate-100"
           />
+          <div className="w-full mb-3">
+            <button type="button" onClick={() => setRiskShipOnlyName('Victoria')} className="w-full text-xs bg-slate-800 border border-slate-600 rounded py-1.5">Use Demo Name</button>
+          </div>
           <button
             onClick={fetchRiskByShip}
             className="bg-blue-600 text-white px-4 py-2 rounded font-medium shadow hover:bg-blue-700 transition mb-3 w-full text-sm"

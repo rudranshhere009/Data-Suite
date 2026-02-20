@@ -4,7 +4,8 @@ import {
   getShipTypeTrends,
   getFishingSeasonality,
   getCommercialRatio,
-  getMonthlyShipTotal
+  getMonthlyShipTotal,
+  getArrivals
 } from '../services/aisApi';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Pie, Doughnut, Bar } from 'react-chartjs-2';
@@ -24,22 +25,27 @@ const ApiDashboard = () => {
     shipTypes: [],
     fishingData: [],
     commercialRatio: [],
+    arrivals: [],
     commercialShips: {},
     nonCommercialShips: {},
     loading: true,
     error: null
   });
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [refreshCountdown, setRefreshCountdown] = useState(120);
+  const [typeFilter, setTypeFilter] = useState('');
 
   const fetchDashboardData = async () => {
     try {
       setStats((prev) => ({ ...prev, loading: true, error: null }));
 
-      const [ships, trends, fishing, ratio, monthlyTotal] = await Promise.allSettled([
+      const [ships, trends, fishing, ratio, monthlyTotal, arrivals] = await Promise.allSettled([
         getShips({ limit: 100 }),
         getShipTypeTrends(),
         getFishingSeasonality(),
         getCommercialRatio(),
-        getMonthlyShipTotal()
+        getMonthlyShipTotal(),
+        getArrivals()
       ]);
 
       const shipsData = ships.status === 'fulfilled' ? ships.value : [];
@@ -47,6 +53,7 @@ const ApiDashboard = () => {
       const fishingData = fishing.status === 'fulfilled' ? fishing.value || [] : [];
       const ratioData = ratio.status === 'fulfilled' ? ratio.value || [] : [];
       const monthlyTotalData = monthlyTotal.status === 'fulfilled' ? monthlyTotal.value || {} : {};
+      const arrivalsData = arrivals.status === 'fulfilled' ? arrivals.value || [] : [];
 
       const commercialTypes = ['Cargo', 'Tanker', 'Passenger'];
       const commercialShips = {};
@@ -77,6 +84,7 @@ const ApiDashboard = () => {
         shipTypes: shipTypesData,
         fishingData,
         commercialRatio: ratioData,
+        arrivals: arrivalsData,
         commercialShips,
         nonCommercialShips,
         loading: false,
@@ -90,17 +98,59 @@ const ApiDashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-    const interval = setInterval(fetchDashboardData, 2 * 60 * 1000);
-    return () => clearInterval(interval);
+  }, [autoRefresh]);
+
+  useEffect(() => {
+    if (!autoRefresh) return undefined;
+    const tick = setInterval(() => {
+      setRefreshCountdown((prev) => {
+        if (prev <= 1) {
+          fetchDashboardData();
+          return 120;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(tick);
   }, []);
 
+  const exportSnapshot = () => {
+    const snapshot = {
+      generated_at: new Date().toISOString(),
+      totalShips: stats.totalShips,
+      monthlyTotal: stats.monthlyTotal,
+      topShipTypes: stats.shipTypes.slice(0, 10),
+      topDestinations: stats.arrivals.slice(0, 10),
+      commercialShips: stats.commercialShips,
+      nonCommercialShips: stats.nonCommercialShips
+    };
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dashboard-snapshot-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const filteredShipTypes = stats.shipTypes.filter((item) =>
+    (item.ship_type || 'Unknown').toLowerCase().includes(typeFilter.toLowerCase())
+  );
   const shipTypeChartData = {
-    labels: stats.shipTypes.slice(0, 8).map((item) => item.ship_type || 'Unknown'),
+    labels: filteredShipTypes.slice(0, 8).map((item) => item.ship_type || 'Unknown'),
     datasets: [{
-      data: stats.shipTypes.slice(0, 8).map((item) => item.count || 0),
+      data: filteredShipTypes.slice(0, 8).map((item) => item.count || 0),
       backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#0ea5e9', '#14b8a6', '#f97316']
     }]
   };
+  const healthScore = Math.min(
+    100,
+    Math.round(
+      ((stats.totalShips > 0 ? 40 : 0) +
+      (stats.monthlyTotal?.total_records > 1000 ? 30 : 10) +
+      (stats.shipTypes.length > 4 ? 30 : 15))
+    )
+  );
 
   const commercialPieData = {
     labels: ['Commercial', 'Non-Commercial'],
@@ -134,12 +184,27 @@ const ApiDashboard = () => {
     <div className="max-w-[1400px] mx-auto p-3 md:p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen text-slate-100 rounded-2xl border border-slate-800 shadow-2xl">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
         <h2 className="text-2xl md:text-3xl font-extrabold text-slate-100 animate-fadeInDown">AIS Dashboard</h2>
-        <button
-          onClick={() => setTimeout(fetchDashboardData, 500)}
-          className="px-5 py-2.5 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
-        >
-          Refresh Data
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setAutoRefresh((v) => !v)}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold ${autoRefresh ? 'bg-emerald-600' : 'bg-slate-700'} text-white`}
+          >
+            Auto Refresh: {autoRefresh ? 'ON' : 'OFF'}
+          </button>
+          <span className="text-xs text-slate-400">Next: {refreshCountdown}s</span>
+          <button
+            onClick={() => setTimeout(fetchDashboardData, 500)}
+            className="px-5 py-2.5 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            Refresh Data
+          </button>
+          <button
+            onClick={exportSnapshot}
+            className="px-4 py-2.5 bg-violet-600 text-white rounded-xl shadow-md hover:bg-violet-700 transition"
+          >
+            Export Snapshot
+          </button>
+        </div>
       </div>
 
       {stats.error && (
@@ -166,11 +231,23 @@ const ApiDashboard = () => {
           <p className="text-slate-400 text-sm">Total AIS Records</p>
           <p className="text-3xl font-bold text-slate-100">{(stats.monthlyTotal?.total_records || 0).toLocaleString()}</p>
         </div>
+        <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-2xl shadow-lg animate-fadeInUp">
+          <p className="text-slate-400 text-sm">Data Health Score</p>
+          <p className="text-3xl font-bold text-cyan-300">{healthScore}%</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
         <div className="bg-slate-900/90 border border-slate-700 p-4 md:p-6 rounded-2xl shadow-xl animate-fadeInUp">
-          <h3 className="text-lg font-bold text-slate-100 mb-4">Ship Type Distribution</h3>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h3 className="text-lg font-bold text-slate-100">Ship Type Distribution</h3>
+            <input
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              placeholder="Filter type"
+              className="bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-xs text-slate-100"
+            />
+          </div>
           <div className="h-72"><Pie data={shipTypeChartData} options={{ responsive: true, maintainAspectRatio: false }} /></div>
         </div>
 
@@ -182,6 +259,17 @@ const ApiDashboard = () => {
         <div className="bg-slate-900/90 border border-slate-700 p-4 md:p-6 rounded-2xl shadow-xl animate-fadeInUp">
           <h3 className="text-lg font-bold text-slate-100 mb-4">Fishing Seasonality</h3>
           <div className="h-72"><Bar data={fishingBarData} options={{ responsive: true, maintainAspectRatio: false }} /></div>
+        </div>
+      </div>
+      <div className="mt-6 bg-slate-900/90 border border-slate-700 rounded-2xl p-4 md:p-6 shadow-xl animate-fadeInUp">
+        <h3 className="text-lg font-bold text-slate-100 mb-3">Top Destinations (Arrivals)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {(stats.arrivals || []).slice(0, 8).map((row, idx) => (
+            <div key={idx} className="flex items-center justify-between bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2">
+              <span className="text-slate-200 text-sm truncate pr-3">{row.destination || 'Unknown'}</span>
+              <span className="text-cyan-300 font-semibold text-sm">{(row.arrivals || 0).toLocaleString()}</span>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -26,6 +26,14 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
   // Build global grid like main.html
   const buildGlobalGrid = () => {
     if (!mapRef.current) return;
+    const zoom = mapRef.current.getZoom();
+    const effectiveStep =
+      zoom <= 2 ? Math.max(gridStep, 30) :
+      zoom <= 3 ? Math.max(gridStep, 20) :
+      zoom <= 4 ? Math.max(gridStep, 10) :
+      gridStep;
+    const majorStep = effectiveStep >= 10 ? effectiveStep : effectiveStep * 2;
+    const showLabels = zoom >= 3;
 
     // Initialize gridLayerRef if missing
     if (!gridLayerRef.current) {
@@ -41,55 +49,59 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     const LON_MIN = -180, LON_MAX = 180;
 
     // Create latitude lines (horizontal)
-    for (let lat = Math.ceil(LAT_MIN / gridStep) * gridStep; lat <= LAT_MAX; lat += gridStep) {
-      const major10 = isNearMultiple(lat, 10);
+    for (let lat = Math.ceil(LAT_MIN / effectiveStep) * effectiveStep; lat <= LAT_MAX; lat += effectiveStep) {
+      const majorLine = isNearMultiple(lat, majorStep);
 
       const latLine = L.polyline([[lat, LON_MIN], [lat, LON_MAX]], {
-        color: major10 ? '#00bcd4' : '#90a4ae',
-        weight: major10 ? 1.6 : 1,
-        opacity: major10 ? 0.7 : 0.5,
-        dashArray: major10 ? null : '4,4',
+        color: majorLine ? '#00bcd4' : '#90a4ae',
+        weight: majorLine ? 1.6 : 1,
+        opacity: majorLine ? 0.65 : 0.35,
+        dashArray: majorLine ? null : '4,4',
         interactive: false
       });
       gridLayerRef.current.addLayer(latLine);
 
       // Add latitude label on the left edge
-      const latLabelMarker = L.marker([lat, LON_MIN + 2], {
-        interactive: false,
-        icon: L.divIcon({
-          className: 'grid-label',
-          html: latLabel(lat),
-          iconSize: [40, 20],
-          iconAnchor: [0, 10]
-        })
-      });
-      gridLayerRef.current.addLayer(latLabelMarker);
+      if (showLabels && majorLine) {
+        const latLabelMarker = L.marker([lat, LON_MIN + 2], {
+          interactive: false,
+          icon: L.divIcon({
+            className: 'grid-label',
+            html: latLabel(lat),
+            iconSize: [40, 20],
+            iconAnchor: [0, 10]
+          })
+        });
+        gridLayerRef.current.addLayer(latLabelMarker);
+      }
     }
 
     // Create longitude lines (vertical)
-    for (let lon = Math.ceil(LON_MIN / gridStep) * gridStep; lon <= LON_MAX; lon += gridStep) {
-      const major10 = isNearMultiple(lon, 10);
+    for (let lon = Math.ceil(LON_MIN / effectiveStep) * effectiveStep; lon <= LON_MAX; lon += effectiveStep) {
+      const majorLine = isNearMultiple(lon, majorStep);
 
       const lonLine = L.polyline([[LAT_MIN, lon], [LAT_MAX, lon]], {
-        color: major10 ? '#00bcd4' : '#90a4ae',
-        weight: major10 ? 1.6 : 1,
-        opacity: major10 ? 0.7 : 0.5,
-        dashArray: major10 ? null : '4,4',
+        color: majorLine ? '#00bcd4' : '#90a4ae',
+        weight: majorLine ? 1.6 : 1,
+        opacity: majorLine ? 0.65 : 0.35,
+        dashArray: majorLine ? null : '4,4',
         interactive: false
       });
       gridLayerRef.current.addLayer(lonLine);
 
       // Add longitude label on the top edge
-      const lonLabelMarker = L.marker([LAT_MAX - 2, lon], {
-        interactive: false,
-        icon: L.divIcon({
-          className: 'grid-label',
-          html: lonLabel(lon),
-          iconSize: [40, 20],
-          iconAnchor: [20, 0]
-        })
-      });
-      gridLayerRef.current.addLayer(lonLabelMarker);
+      if (showLabels && majorLine) {
+        const lonLabelMarker = L.marker([LAT_MAX - 2, lon], {
+          interactive: false,
+          icon: L.divIcon({
+            className: 'grid-label',
+            html: lonLabel(lon),
+            iconSize: [40, 20],
+            iconAnchor: [20, 0]
+          })
+        });
+        gridLayerRef.current.addLayer(lonLabelMarker);
+      }
     }
   };
 
@@ -227,14 +239,10 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     const map = L.map("map", {
       center: [15.0, 75.0], // Indian Ocean region
       zoom: 5,
-      minZoom: 2, // Prevent excessive zoom out
+      minZoom: 2,
       maxZoom: 18,
       preferCanvas: true,
-      // Prevent world duplication with strict bounds
-      maxBounds: [[-85, -180], [85, 180]], // Mercator projection limits
-      maxBoundsViscosity: 1.0,
-      worldCopyJump: false,
-      noWrap: true, // Prevent horizontal wrapping
+      worldCopyJump: true,
       crs: L.CRS.EPSG3857, // Explicit Web Mercator
     });
 
@@ -242,9 +250,7 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
-      noWrap: true, // Prevent tile wrapping
       attribution: "&copy; OpenStreetMap contributors",
-      bounds: [[-85, -180], [85, 180]], // Limit tile bounds
     }).addTo(map);
 
     // Initialize grid layer
@@ -253,28 +259,7 @@ export default function Map({ sidebarOpen, setSidebarOpen, setRefreshData, isRef
     // Build initial grid
     buildGlobalGrid();
 
-    // Add map event listeners for boundary enforcement
-    map.on('moveend', () => {
-      const center = map.getCenter();
-      const bounds = map.getBounds();
-      
-      // Ensure map doesn't show duplicates by constraining center
-      let newLat = center.lat;
-      let newLng = center.lng;
-      
-      // Clamp latitude to prevent polar issues
-      if (newLat > 85) newLat = 85;
-      if (newLat < -85) newLat = -85;
-      
-      // Clamp longitude to single world view
-      if (newLng > 180) newLng = ((newLng + 180) % 360) - 180;
-      if (newLng < -180) newLng = ((newLng + 180) % 360) - 180;
-      
-      // Only adjust if needed
-      if (newLat !== center.lat || newLng !== center.lng) {
-        map.setView([newLat, newLng], map.getZoom(), { animate: false });
-      }
-    });
+    map.on('zoomend', buildGlobalGrid);
 
     // Dedicated layer group for markers
     markersRef.current = L.layerGroup().addTo(map);
