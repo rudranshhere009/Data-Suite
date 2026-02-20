@@ -1,10 +1,10 @@
-﻿# Data Suite (AIS Maritime Intelligence Demo)
+﻿# 🚢 Data Suite (AIS Maritime Intelligence Demo)
 
 A full-stack maritime analytics demo platform for ship tracking, route analysis, traffic forecasting, and risk insights.
 
 ---
 
-## What This Project Is
+## 📘 What This Project Is
 
 Data Suite is a modular demo system showing how maritime telemetry can be:
 
@@ -17,22 +17,22 @@ It is designed for learning, prototyping, and product demos.
 
 ---
 
-## Core Features
+## ✨ Core Features
 
 | Feature | Description | Status |
 |---|---|---|
-| Live Ship Map | Visualize latest vessel positions on interactive map | Available |
-| Ship Profile and Route View | Fetch per-ship details and route tracks | Available |
-| Trends Dashboard | Daily/hourly active ships and average speed metrics | Available |
-| Traffic Forecasting | Date-based traffic and ARIMA speed forecasting | Available |
-| Risk Forecasting | Proximity-based risk checks for selected vessels | Available |
-| Authentication | Signup/signin with token-based auth flow | Available |
-| PostgreSQL Backend | AIS-style records persisted in relational DB | Available |
-| Dockerized Deployment | Multi-service setup via Docker Compose | Available |
+| 🗺️ Live Ship Map | Visualize latest vessel positions on interactive map | ✅ Available |
+| 🧭 Ship Profile and Route View | Fetch per-ship details and route tracks | ✅ Available |
+| 📈 Trends Dashboard | Daily/hourly active ships and average speed metrics | ✅ Available |
+| 🚦 Traffic Forecasting | Date-based traffic and ARIMA speed forecasting | ✅ Available |
+| ⚠️ Risk Forecasting | Proximity-based risk checks for selected vessels | ✅ Available |
+| 🔐 Authentication | Signup/signin with token-based auth flow | ✅ Available |
+| 🐘 PostgreSQL Backend | AIS-style records persisted in relational DB | ✅ Available |
+| 🐳 Dockerized Deployment | Multi-service setup via Docker Compose | ✅ Available |
 
 ---
 
-## Tech Stack
+## 🧰 Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -43,7 +43,7 @@ It is designed for learning, prototyping, and product demos.
 
 ---
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```text
 DataSuite-main/
@@ -63,7 +63,7 @@ DataSuite-main/
 
 ---
 
-## System Architecture
+## 🧠 System Architecture
 
 ```mermaid
 flowchart LR
@@ -76,7 +76,7 @@ flowchart LR
 
 ---
 
-## Data Flow
+## 🔄 Data Flow
 
 ```mermaid
 sequenceDiagram
@@ -97,7 +97,7 @@ sequenceDiagram
 
 ---
 
-## Run Locally (Windows + PostgreSQL)
+## 🚀 Run Locally (Windows + PostgreSQL)
 
 ### 1) Backend `.env`
 Create `backend/.env`:
@@ -141,7 +141,7 @@ Backend URL: `http://localhost:5000`
 
 ---
 
-## Run with Docker
+## 🐳 Run with Docker
 
 ```powershell
 docker compose up --build
@@ -153,7 +153,7 @@ docker compose up --build
 
 ---
 
-## Key API Surface
+## 🔌 Key API Surface
 
 | Module | Endpoint Pattern | Purpose |
 |---|---|---|
@@ -166,7 +166,7 @@ docker compose up --build
 
 ---
 
-## Demo Analytics Included
+## 📊 Demo Analytics Included
 
 | Analytics Type | Method |
 |---|---|
@@ -179,7 +179,7 @@ docker compose up --build
 
 ---
 
-## Frontend Notes
+## 🖼️ Frontend Notes
 
 - Auth background image is expected at:
   - `Frontend/public/auth-bg.jpg`
@@ -187,7 +187,7 @@ docker compose up --build
 
 ---
 
-## Important Notes
+## ⚠️ Important Notes
 
 - This repository is a demo implementation.
 - Forecast outputs are illustrative and not operationally certified.
@@ -196,7 +196,7 @@ docker compose up --build
 
 ---
 
-## Contribution
+## 🤝 Contribution
 
 1. Fork repository
 2. Create feature branch
@@ -205,12 +205,12 @@ docker compose up --build
 
 ---
 
-## License
+## 📄 License
 
 Choose and add your preferred open-source license (MIT/Apache-2.0/etc.).
 
 ---
 
-## Summary
+## ✅ Summary
 
 Data Suite is a feature-rich analytics tool through which you can visually analyze, represent, and manage different types of structured data chunks using dashboards, maps, forecasting modules, and API-driven workflows.
