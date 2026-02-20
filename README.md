@@ -1,15 +1,10 @@
-# ?? Data Suite (AIS Maritime Intelligence Demo)
+ï»¿# Data Suite (AIS Maritime Intelligence Demo)
 
 A full-stack maritime analytics demo platform for ship tracking, route analysis, traffic forecasting, and risk insights.
 
-> [!IMPORTANT]
-> **Demo/Data Disclaimer**
-> This project does **not** use confidential, classified, or proprietary operational data.
-> All data used here is **open-source / synthetic / AI-generated for demonstration purposes only** to showcase how Data Suite operates.
-
 ---
 
-## ?? What This Project Is
+## What This Project Is
 
 Data Suite is a modular demo system showing how maritime telemetry can be:
 
@@ -22,66 +17,66 @@ It is designed for learning, prototyping, and product demos.
 
 ---
 
-## ? Core Features
+## Core Features
 
 | Feature | Description | Status |
 |---|---|---|
-| ??? Live Ship Map | Visualize latest vessel positions on interactive map | ? |
-| ?? Ship Profile & Route View | Fetch per-ship details and route tracks | ? |
-| ?? Trends Dashboard | Daily/hourly active ships and average speed metrics | ? |
-| ?? Traffic Forecasting | Date-based traffic and ARIMA speed forecasting | ? |
-| ?? Risk Forecasting | Proximity-based risk checks for selected vessels | ? |
-| ?? Authentication | Signup/signin with token-based auth flow | ? |
-| ?? PostgreSQL Backend | AIS-style records persisted in relational DB | ? |
-| ?? Dockerized Deployment | Multi-service setup via Docker Compose | ? |
+| Live Ship Map | Visualize latest vessel positions on interactive map | Available |
+| Ship Profile and Route View | Fetch per-ship details and route tracks | Available |
+| Trends Dashboard | Daily/hourly active ships and average speed metrics | Available |
+| Traffic Forecasting | Date-based traffic and ARIMA speed forecasting | Available |
+| Risk Forecasting | Proximity-based risk checks for selected vessels | Available |
+| Authentication | Signup/signin with token-based auth flow | Available |
+| PostgreSQL Backend | AIS-style records persisted in relational DB | Available |
+| Dockerized Deployment | Multi-service setup via Docker Compose | Available |
 
 ---
 
-## ?? Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Frontend | React, Vite, Tailwind CSS, Leaflet, Chart.js |
 | Backend | Flask, SQLAlchemy, Pandas, Statsmodels |
 | Database | PostgreSQL 15+ |
-| Infra | Docker, Docker Compose, Nginx |
+| Infrastructure | Docker, Docker Compose, Nginx |
 
 ---
 
-## ??? Project Structure
+## Project Structure
 
 ```text
 DataSuite-main/
-+-- Frontend/                  # React + Vite client
-¦   +-- src/components         # UI modules (map, auth, dashboards)
-¦   +-- src/services           # API service wrappers
-¦   +-- src/styles             # Global + component styles
-+-- backend/                   # Flask API + DB logic
-¦   +-- routes                 # API blueprints
-¦   +-- utils                  # DB loader utilities
-¦   +-- config.py              # App + DB bootstrapping
-¦   +-- app.py                 # Flask entrypoint
-+-- docker-compose.yml         # Full stack orchestration
-+-- nginx.conf                 # Reverse proxy + static hosting
-+-- README.md
+|-- Frontend/                  # React + Vite client
+|   |-- src/components         # UI modules (map, auth, dashboards)
+|   |-- src/services           # API service wrappers
+|   |-- src/styles             # Global + component styles
+|-- backend/                   # Flask API + DB logic
+|   |-- routes                 # API blueprints
+|   |-- utils                  # DB loader utilities
+|   |-- config.py              # App + DB bootstrapping
+|   |-- app.py                 # Flask entrypoint
+|-- docker-compose.yml         # Full stack orchestration
+|-- nginx.conf                 # Reverse proxy + static hosting
+|-- README.md
 ```
 
 ---
 
-## ?? System Architecture
+## System Architecture
 
 ```mermaid
 flowchart LR
-    U[?? User Browser] --> FE[?? React Frontend]
-    FE -->|/api/*| NX[?? Nginx]
-    NX --> BE[?? Flask API]
-    BE --> DB[(?? PostgreSQL)]
-    BE --> CSV[?? Demo AIS CSV]
+    U[User Browser] --> FE[React Frontend]
+    FE -->|/api/*| NX[Nginx]
+    NX --> BE[Flask API]
+    BE --> DB[(PostgreSQL)]
+    BE --> CSV[Demo AIS CSV]
 ```
 
 ---
 
-## ?? Data Flow
+## Data Flow
 
 ```mermaid
 sequenceDiagram
@@ -102,7 +97,7 @@ sequenceDiagram
 
 ---
 
-## ?? Run Locally (Windows + PostgreSQL)
+## Run Locally (Windows + PostgreSQL)
 
 ### 1) Backend `.env`
 Create `backend/.env`:
@@ -141,12 +136,12 @@ npm install
 npm run dev
 ```
 
-Frontend default URL: `http://localhost:5173`
+Frontend default URL: `http://localhost:5173`  
 Backend URL: `http://localhost:5000`
 
 ---
 
-## ?? Run with Docker
+## Run with Docker
 
 ```powershell
 docker compose up --build
@@ -158,7 +153,7 @@ docker compose up --build
 
 ---
 
-## ?? Key API Surface
+## Key API Surface
 
 | Module | Endpoint Pattern | Purpose |
 |---|---|---|
@@ -166,12 +161,12 @@ docker compose up --build
 | Ships | `/api/ships/*` | Latest ships, details, route |
 | Trends | `/api/trends/*` | Daily/hourly metrics |
 | Traffic | `/api/traffic/*` | Traffic and speed forecasts |
-| Risk | `/api/riskforecast/*` | Collision-risk style checks |
+| Risk | `/api/riskforecast/*` | Proximity risk checks |
 | Routes | `/api/routes/*` | CSV-backed route helper APIs |
 
 ---
 
-## ?? Demo Analytics Included
+## Demo Analytics Included
 
 | Analytics Type | Method |
 |---|---|
@@ -184,7 +179,7 @@ docker compose up --build
 
 ---
 
-## ??? Frontend Notes
+## Frontend Notes
 
 - Auth background image is expected at:
   - `Frontend/public/auth-bg.jpg`
@@ -192,16 +187,16 @@ docker compose up --build
 
 ---
 
-## ?? Important Notes
+## Important Notes
 
-- This repository is a **demo implementation**.
+- This repository is a demo implementation.
 - Forecast outputs are illustrative and not operationally certified.
 - Authentication is basic and should be hardened for production.
 - Use production WSGI, secrets management, and migrations before real deployment.
 
 ---
 
-## ?? Contribution
+## Contribution
 
 1. Fork repository
 2. Create feature branch
@@ -210,12 +205,12 @@ docker compose up --build
 
 ---
 
-## ?? License
+## License
 
 Choose and add your preferred open-source license (MIT/Apache-2.0/etc.).
 
 ---
 
-## ? One-line Summary
+## Summary
 
-**Data Suite is an open-source demo platform that simulates maritime intelligence workflows using non-confidential, AI/open data to demonstrate end-to-end analytics operations.**
+Data Suite is a feature-rich analytics tool through which you can visually analyze, represent, and manage different types of structured data chunks using dashboards, maps, forecasting modules, and API-driven workflows.
