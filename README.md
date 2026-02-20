@@ -189,23 +189,6 @@ docker compose up --build
 
 ## 📷 Screenshots
 
-Save all screenshots in:
-
-- `Frontend/public/screenshots/`
-
-Use these exact filenames:
-
-1. `01-auth-login.png`
-2. `02-live-map.png`
-3. `03-dashboard.png`
-4. `04-forecasting.png`
-5. `05-trends.png`
-6. `06-routes-search.png`
-7. `07-ship-profile.png`
-8. `08-route-tv-tracker.png`
-
-Then this section will render them in README:
-
 ### 1) Auth (Login / Signup)
 ![Auth Login](Frontend/public/screenshots/01-auth-login.png)
 
