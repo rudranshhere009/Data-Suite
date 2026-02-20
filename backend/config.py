@@ -7,7 +7,19 @@ from flask_cors import CORS
 # Load .env file
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+
+def normalize_database_url(url):
+    """Force SQLAlchemy to use psycopg (v3) driver for Postgres URLs."""
+    if not url:
+        return url
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+psycopg://", 1)
+    if url.startswith("postgresql://") and not url.startswith("postgresql+"):
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    return url
+
+
+DATABASE_URL = normalize_database_url(os.getenv("DATABASE_URL"))
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 
 
