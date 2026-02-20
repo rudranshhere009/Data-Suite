@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import Map from './Map';
 import ShipProfile from "./ShipProfile";
 import { getShipDetails, getShipRoute } from '../services/aisApi'; // Import API functions
@@ -185,7 +186,7 @@ const RoutesDashboard = ({
       )}
 
       {/* Map Pop-up Modal */}
-      {showMapPopup && routeData && (
+      {showMapPopup && routeData && createPortal((
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm animate-fadeIn" onClick={handleCloseMapPopup}>
           <div className="absolute top-0 right-0 h-screen w-full md:w-[96vw] lg:w-[86vw] bg-slate-900 border-l border-slate-700 shadow-2xl animate-slideInRight" onClick={(e) => e.stopPropagation()}>
             <button
@@ -206,10 +207,10 @@ const RoutesDashboard = ({
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* Graph Pop-up Modal (New) */}
-      {showGraphPopup && routeData && (
+      {showGraphPopup && routeData && createPortal((
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm animate-fadeIn" onClick={handleCloseGraphPopup}>
           <div className="absolute top-0 right-0 h-screen w-full md:w-[96vw] lg:w-[86vw] bg-slate-900 border-l border-slate-700 shadow-2xl animate-slideInRight overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-600 to-violet-600 text-white border-b border-slate-700">
@@ -233,10 +234,10 @@ const RoutesDashboard = ({
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* Anomaly Pop-up Modal (New) */}
-      {showAnomalyPopup && routeData && (
+      {showAnomalyPopup && routeData && createPortal((
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm animate-fadeIn" onClick={handleCloseAnomalyPopup}>
           <div className="absolute top-0 right-0 h-screen w-full md:w-[96vw] lg:w-[86vw] bg-slate-900 border-l border-slate-700 shadow-2xl animate-slideInRight" onClick={(e) => e.stopPropagation()}>
             <button
@@ -275,9 +276,11 @@ const RoutesDashboard = ({
             </div>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   );
 };
 
 export default RoutesDashboard;
+
+
