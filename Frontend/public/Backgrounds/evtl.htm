@@ -1,0 +1,2339 @@
+<title>
+    Invoice USD List Table
+</title>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="csrf-token" content="OcZF9n30Sl7uplNwFAJFHI8uqdeaEAdHkeID0zog">
+    <title>EVTL INDIA CRM</title>
+
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/css/app.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet"
+        href="http://localhost/CRM/public/assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/bundles/izitoast/css/iziToast.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/css/style.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/css/custom.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/css/components.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/bundles/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/bundles/pretty-checkbox/pretty-checkbox.min.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/bundles/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="http://localhost/CRM/public/assets/bundles/jquery-selectric/selectric.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel='shortcut icon' type='image/x-icon' href="http://localhost/CRM/public/img/EVTL India Logo.png" />
+</head>
+<style>
+    .main-sidebar .sidebar-menu li ul.dropdown-menu li.active>a {
+        color: #6777ef !important;
+        font-weight: 600
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .holiday-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip-container .tooltip-text {
+        visibility: hidden;
+        width: 80px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        top: 100%;
+        /* Position above */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .holiday-container .tooltip-text {
+        visibility: hidden;
+        width: 80px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        top: 100%;
+        /* Position above */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .document-container .tooltip-text {
+        visibility: hidden;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        top: 100%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .holiday-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .document-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+        width: 135px !important;
+        padding: 8px !important;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .horizontal {
+        display: flex;
+        gap: 20px;
+    }
+
+    .verticals {
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background: linear-gradient(#f8f1c6 50%, #f8f1c6 98%, #989898 100%);
+        border-radius: 5px;
+    }
+
+    .pinned-note {
+        position: relative;
+        background: linear-gradient(#f8f1c6 50%, #f8f1c6 98%, #989898 100%);
+        border-radius: 5px;
+        border: 1px solid #C4C296;
+        color: #43423d;
+        text-shadow: 0 1px 1px #ffffff;
+        margin: 20px auto;
+        max-width: 480px;
+    }
+
+    .pinned-note .nodes {
+        background: radial-gradient(#ffffff 30%, transparent 1%) 0 0, radial-gradient(rgba(0, 0, 0, 1) 1%, transparent 35%) 0 0px;
+        background-size: 30px 30px;
+        background-repeat: repeat-y;
+        margin-left: 8px;
+    }
+
+    .pinned-note .no-nodes {
+        background: none;
+        margin-left: -20px;
+    }
+
+    .pinned-note .left-strip {
+        border-left: 3px double #989898;
+        margin-left: 40px;
+        padding: 10px 20px 12px 20px;
+        outline: none;
+    }
+
+    .pinned-heading {
+        font-size: 20px;
+        line-height: 32px;
+        margin: 25px 0 10px;
+    }
+
+    .pinned-description {
+        font-size: 16px;
+        line-height: 34px;
+        margin: 10px 0;
+        position: relative;
+        top: -2px;
+    }
+
+    .anchor-link {
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .scrolling-wrapper {
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
+        padding: 15px 0;
+    }
+
+    .article-body {
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 20px;
+    }
+
+    .article-body .pinned-note {
+        display: inline-block;
+        white-space: normal;
+    }
+
+    .pinit {
+        position: absolute;
+        right: -20px;
+        top: -15px;
+        width: 60px;
+        height: 60px;
+        background: url('push-pin.svg');
+        background-size: cover;
+        margin-left: -30px;
+    }
+
+    .first-pinned,
+    .seventh-pinned {
+        transform: rotate(2deg);
+    }
+
+    .second-pinned,
+    .eighth-pinned {
+        transform: rotate(-1deg);
+    }
+
+    .third-pinned,
+    .ninth-pinned {
+        transform: rotate(5deg);
+    }
+
+    .fourth-pinned,
+    .tenth-pinned {
+        transform: rotate(1deg);
+    }
+
+    .fifth-pinned,
+    .eleventh-pinned {
+        transform: rotate(-3deg);
+    }
+
+    .sixth-pinned,
+    .twelveth-pinned {
+        transform: rotate(1deg);
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f6f6f6;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: #c6c6c6;
+    }
+
+    #notes-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .note-card {
+        background-color: #fffbe7;
+        border-left: 5px solid #007bff;
+        border-radius: 8px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .note-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .note-header {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .note-title {
+        color: #007bff;
+        margin: 0;
+    }
+
+    .note-footer {
+        font-size: 12px;
+        color: #666;
+        text-align: right;
+    }
+
+    .note-date {
+        font-style: italic;
+    }
+
+    .contents {
+        background-image: url('http://localhost/CRM/public/img/notes.jpg');
+        object-fit: cover;
+        background-repeat: round;
+    }
+
+    #noteForm>div:nth-child(2)>div>div.note-editing-area>div.note-editable.card-block {
+        margin-top: 20px;
+    }
+
+    #editNoteForm>div:nth-child(3)>div>div.note-editing-area>div.note-editable.card-block {
+        margin-top: 20px;
+    }
+
+    li.mt-2.tooltip-container {
+        margin-right: 16px !important;
+    }
+
+    li.mt-2.holiday-container {
+        margin-right: 16px !important;
+    }
+
+    li.mt-1.document-container {
+        margin-right: 16px !important;
+        margin-top: 7px !important;
+    }
+
+    .profile-container .tooltip-text {
+        visibility: hidden;
+        opacity: 0;
+        width: max-content;
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px 8px;
+        position: absolute;
+        z-index: 999;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: opacity 0.3s;
+        white-space: nowrap;
+    }
+
+    .profile-container:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    li.mt-1.profile-container {
+        margin-right: 16px;
+        margin-top: 7px !important;
+    }
+
+    /* JOB ID integration: global search styles start */
+    .job-id-global-search {
+        position: relative;
+        width: min(520px, 44vw);
+        margin-left: 8px;
+    }
+
+    .job-id-global-search__input {
+        width: 100%;
+        height: 42px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        padding: 0 18px 0 42px;
+        font-size: 14px;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .job-id-global-search__input::placeholder {
+        color: rgba(255, 255, 255, 0.78);
+    }
+
+    .job-id-global-search__icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 14px;
+        pointer-events: none;
+    }
+
+    .job-id-global-search__results {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+        padding: 8px;
+        display: none;
+        z-index: 9999;
+        max-height: 360px;
+        overflow-y: auto;
+    }
+
+    .job-id-global-search__results.is-visible {
+        display: block;
+    }
+
+    .job-id-global-search__item {
+        display: block;
+        padding: 11px 13px;
+        border-radius: 12px;
+        color: #1f2937;
+        text-decoration: none;
+    }
+
+    .job-id-global-search__item:hover {
+        background: #f3f4f6;
+        text-decoration: none;
+    }
+
+    .job-id-global-search__title {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .job-id-global-search__meta {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    @media (max-width: 991px) {
+        .job-id-global-search {
+            display: none;
+        }
+    }
+    /* JOB ID integration: global search styles end */
+</style>
+
+
+<body>
+    
+    <div class="loader"></div>
+    <div id="app">
+        <div class="main-wrapper main-wrapper-1">
+            <nav class="navbar navbar-expand-lg main-navbar sticky">
+                <div class="navbar-bg"></div>
+                <div class="form-inline mr-auto">
+                    <ul class="navbar-nav mr-3">
+                        <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg collapse-btn"> <i
+                                    data-feather="align-justify"></i></a></li>
+                        <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
+                                <i data-feather="maximize"></i>
+                            </a></li>
+                    </ul>
+                    
+                    <div class="job-id-global-search">
+                        <i class="fa fa-search job-id-global-search__icon" aria-hidden="true"></i>
+                        <input
+                            type="text"
+                            id="jobIdGlobalSearchInput"
+                            class="job-id-global-search__input"
+                            placeholder="Search company or client name across CRM..."
+                            autocomplete="off">
+                        <div id="jobIdGlobalSearchResults" class="job-id-global-search__results"></div>
+                    </div>
+                    
+                </div>
+                <ul class="navbar-nav navbar-right">
+                                            <li class="mt-2 tooltip-container">
+                            <a href="">
+                                <i class="fa fa-id-card font-20 mt-1 text-black" aria-hidden="true"></i>
+                            </a>
+                            <span class="tooltip-text">Add Notes</span>
+                        </li>
+                    
+                                            <li class="mt-1 document-container" style="position: relative; display: inline-block;">
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#companyDocumentModal">
+                                <i class="fa fa-file-alt font-20 mt-1 text-black" aria-hidden="true"></i>
+                            </a>
+                            <span class="tooltip-text">Company Docs</span>
+                        </li>
+                    
+                        <li class="mt-1 profile-container" style="position: relative; display: inline-block;">
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#companyProfileModal">
+                                <i class="fa fa-building font-20 mt-1 text-black" aria-hidden="true"></i>
+                            </a>
+                            <span class="tooltip-text">Company Profile</span>
+                        </li>
+
+                    
+                    <li class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown"
+                            class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image"
+                                src="http://localhost/CRM/public/img/logo-1.png" class="user-img-radious-style"> <span
+                                class="d-sm-none d-lg-inline-block"></span></a>
+                        <div class="dropdown-menu dropdown-menu-right pullDown">
+                            <div class="dropdown-title">SuperAdmin</div>
+                            <a href="http://localhost/CRM/profile" class="dropdown-item has-icon"> <i class="far fa-user"></i>
+                                Profile </a>
+                            <a href="http://localhost/CRM/logout" class="dropdown-item has-icon text-danger"> <i
+                                    class="fas fa-sign-out-alt"></i>Logout </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="main-sidebar sidebar-style-2">
+                <aside id="sidebar-wrapper">
+                    <div class="sidebar-brand">
+                        <a href="http://localhost/CRM/dashboards">
+                            <img alt="image" src="http://localhost/CRM/public/img/EVTL India Logo.png"
+                                class="header-logo ml-n5 h-100" />
+                            <span class="logo-name"></span>
+                        </a>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li class="">
+                            <a href="http://localhost/CRM/dashboards" class="nav-link">
+                                <i data-feather="monitor"></i><span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        
+                                                    <li
+                                class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="fas fa-handshake"></i><span>Leads</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/salesVendor/index">
+                                                <span>Sales Vendor</span>
+                                            </a>
+                                        </li>
+                                                                        
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/leads/employee-performance">
+                                                <span>Employee Performance</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                        
+                                        <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/lead/axiscompliance">
+                                                <span>Axis Compliance</span>
+                                            </a>
+                                        </li>
+                                    
+                                        <li class="">
+                                            <a class="nav-link"
+                                                href="http://localhost/CRM/lead/index"><span>All
+                                                    Leads</span></a>
+                                        </li>
+
+                                                                                    <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/hot"><span>Today
+                                                        Hot Leads</span></a>
+                                            </li>
+
+                                            <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/fresh"><span>Fresh
+                                                        Leads</span></a>
+                                            </li>
+
+                                            <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/followup"><span>Followup
+                                                        Leads</span></a>
+                                            </li>
+
+                                            <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/hotfollowup"><span>Hot
+                                                        Follow Up</span></a>
+                                            </li>
+
+                                            <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/converted"><span>Converted
+                                                        Leads</span></a>
+                                            </li>
+
+                                            <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/pending"><span>Pending
+                                                        Leads</span></a>
+                                            </li>
+
+                                            <li class="">
+                                                <a class="nav-link"
+                                                    href="http://localhost/CRM/lead/index/denied"><span>Denied
+                                                        Leads</span></a>
+                                            </li>
+                                                                                                                                                       <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/lead/service-contract">
+                                                <span>Final Quotation</span>
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                                                
+                        
+                                                    <li
+                                class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="fas fa-server"></i><span>Operation</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                                            <li><a class="nav-link" href="http://localhost/CRM/large-project/index">L.P Domestic</a>
+                                        </li>
+                                                                                                                <li><a class="nav-link" href="http://localhost/CRM/operation/index">BIS-ISI</a>
+                                        </li>
+                                    
+                                                                            <li><a class="nav-link" href="http://localhost/CRM/bisCrs/index">BIS CRS</a></li>
+                                    
+                                    
+
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link"
+                                                href="http://localhost/CRM/trademark/index"><span>Trademark</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/fmcs/index"><span>FMCS -
+                                                    1</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link"
+                                                href="http://localhost/CRM/epr-registation/index"><span>EPR-Registration</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/eprpost-registation/index"><span>EPR-POST
+                                                    Registration</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/nsws/index">
+                                                <span>NSWS</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/iso/index"><span>ISO</span></a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/iso_certificate/index"><span>ISO
+                                                    Certificate </span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/gem/index"><span>GeM</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/bee/index"><span>Bee</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/tec/index"><span>Tec</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/wmi/index"><span>Wmi</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/waste/index"><span>Waste
+                                                    Collection</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/testing/status/index"><span>Testing
+                                                    Status</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/labPayment/index"><span>Lab
+                                                    Payment</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/saral-sanchar/index"><span>Saral
+                                                    Sanchar</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/fi_visit/index"><span>Foreign
+                                                    Inspection Visit</span></a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/licRenewal/index"><span>Renewal
+                                                    License</span></a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/schemeXOTR/index"><span>Scheme-X
+                                                    OTR
+                                                    (Domestic)</span></a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/schemex-fmcs/index"><span>Scheme-X
+                                                    FMCS</span></a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/noc/index"><span>NOC</span></a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        
+                        
+                                                    <li
+                                class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="fas fa-id-card"></i><span>HR Management</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    
+                                                                             <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/emp-app-form/index">
+                                                <span>Interview Applicant</span>
+                                            </a>
+                                        </li>
+                                                                        
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/emp_info/index"><span>Official
+                                                    Information</span></a>
+                                        </li>
+                                    
+                                    
+
+                                    
+
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/empPerInformation/index">
+                                                <span>Employee Information</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/career/index">
+                                                <span> Online Career</span>
+                                            </a>
+                                        </li>
+                                                                        
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/probation/index">
+                                                <span> Intership Letter </span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/offer/index">
+                                                <span>Offer Letter</span>
+                                            </a>
+                                        </li>
+                                    
+                                </ul>
+                            </li>
+                        
+                        
+                                                    <li
+                                class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="fa fa-ship"></i><span>Logistic</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/logistics/index">
+                                                <span>Logistics Details</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/logistics_payment/index">
+                                                <span>Logistics Payment</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/logistic/client/index">
+                                                <span>Vendor Details</span>
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        
+                        
+                                                <li class="dropdown active bg-primary">
+                            <a href="#" class="menu-toggle nav-link has-dropdown">
+                                <i class="fa fa-credit-card"></i><span>Accounts</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                
+                                <li class="active bg-primary">
+                                    <a class="nav-link" href="http://localhost/CRM/invoiceUSD/performa/index/evtl">
+                                        <span>Invoice USD EVTL</span>
+                                    </a>
+                                </li>
+                                
+                                <li class="">
+                                    <a class="nav-link" href="http://localhost/CRM/invoiceUSD/performa/index/prolix">
+                                        <span>Invoice USD PROLIX</span>
+                                    </a>
+                                </li>
+                                
+                                 <li class="">
+                                    <a class="nav-link" href="http://localhost/CRM/invoiceUSD/performa/index/government">
+                                        <span>Invoice USD Government</span>
+                                    </a>
+                                </li>
+
+                                                            </ul>
+                        </li>
+                        
+                        
+                                                    <li
+                                class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="far fa-address-book"></i><span>Vendor</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/lab/index">
+                                                <span>Vendor</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/vendor/reports/index">
+                                                <span>Vendor Reports</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li class="">
+                                            <a class="nav-link" href="http://localhost/CRM/po/index">
+                                                <span>Purchase Order</span>
+                                            </a>
+                                        </li>
+                                                                                                                <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/expense/index">
+                                                <span>Expense List</span>
+                                            </a>
+                                        </li>
+                                                                                                                <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/vendor/data/index">
+                                                <span>Vendor Data</span>
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        
+                        
+                                                    <li
+                                class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="fa fa-gear"></i><span>Others</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/training/index">
+                                                <span>Training</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/training/marketing">
+                                                <span>Training Marketing</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/training/operation">
+                                                <span>Training Operation</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/bulk/create">
+                                                <span>Bulk Email</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/upload/index">
+                                                <span>Upload Bulk Documents</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/notification/index">
+                                                <span>Notification</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/log/index">
+                                                <span>Log</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/clear-all">
+                                                <span>Cache Clear</span>
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        
+                        
+                                                    <li class="dropdown ">
+                                <a href="#" class="menu-toggle nav-link has-dropdown">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Lab Equipment</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/equipments/testingEquipment">
+                                                <span>Quotation</span>
+                                            </a>
+                                        </li>
+                                    
+                                                                            <li
+                                            class="">
+                                            <a class="nav-link" href="http://localhost/CRM/lab-equipments/purchase">
+                                                <span>Purchase</span>
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        
+                                                    <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/client/index">
+                                    <i class="fas fa-user-plus"></i><span>Client</span>
+                                </a>
+                            </li>
+                        
+                                                    <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/isi-checklist/index">
+                                    <i class="fa-solid fa-list-check"></i><span>QCI/ISI Checklist</span>
+                                </a>
+                            </li>
+                        
+                                                    <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/preInspection">
+                                    <i class="fas fa-file-signature"></i><span>Pre Inspection</span>
+                                </a>
+                            </li>
+                        
+                                                    <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/equipList/index">
+                                    <i class="fas fa-file-alt"></i><span>Equipment List</span>
+                                </a>
+                            </li>
+                        
+                                                    <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/challan/index">
+                                    <i class="fa fa-ticket" aria-hidden="true"></i><span>Challan</span>
+                                </a>
+                            </li>
+                        
+                                                    <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/preModal/pre-module">
+                                    <i class="fa fa-puzzle-piece" aria-hidden="true"></i><span>Training Module</span>
+                                </a>
+                            </li>
+                                                                       <li class="">
+                                <a class="nav-link" href="http://localhost/CRM/access/ip-requests">
+                                    <i class="fa-solid fa-wifi" aria-hidden="true"></i><span>IP Access</span>
+                                </a>
+                            </li>
+                                            </ul>
+                </aside>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* JOB ID integration: global search script start */
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('jobIdGlobalSearchInput');
+            const resultsBox = document.getElementById('jobIdGlobalSearchResults');
+            let activeRequest = null;
+
+            if (!input || !resultsBox) {
+                return;
+            }
+
+            const closeResults = () => {
+                resultsBox.innerHTML = '';
+                resultsBox.classList.remove('is-visible');
+            };
+
+            const renderResults = (items) => {
+                if (!items.length) {
+                    resultsBox.innerHTML = '<div class="job-id-global-search__item"><span class="job-id-global-search__title">No matching result found</span></div>';
+                    resultsBox.classList.add('is-visible');
+                    return;
+                }
+
+                resultsBox.innerHTML = items.map((item) => `
+                    <a href="${item.url}" class="job-id-global-search__item">
+                        <span class="job-id-global-search__title">${item.company_name}</span>
+                        <span class="job-id-global-search__meta">${item.contact_name} · ${item.job_code}</span>
+                    </a>
+                `).join('');
+                resultsBox.classList.add('is-visible');
+            };
+
+            input.addEventListener('input', function() {
+                const query = this.value.trim();
+
+                if (activeRequest) {
+                    activeRequest.abort();
+                }
+
+                if (query.length < 2) {
+                    closeResults();
+                    return;
+                }
+
+                activeRequest = new AbortController();
+
+                fetch(`http://localhost/CRM/job-id/search?q=${encodeURIComponent(query)}`, {
+                    signal: activeRequest.signal,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then((response) => response.ok ? response.json() : [])
+                    .then((items) => renderResults(items))
+                    .catch((error) => {
+                        if (error.name !== 'AbortError') {
+                            closeResults();
+                        }
+                    });
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.job-id-global-search')) {
+                    closeResults();
+                }
+            });
+
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeResults();
+                }
+            });
+        });
+        /* JOB ID integration: global search script end */
+    </script>
+</body>
+
+<div class="main-content">
+    <section class="section">
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center p-2 bg-primary">
+                            <h6 class="mb-0 text-white">
+                                <i class="fas fa-file-invoice-dollar me-1"></i> Invoice USD List
+                            </h6>
+                            <a href="http://localhost/CRM/invoiceUSD/performa/create" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus"></i> Add Invoice
+                            </a>
+                        </div>
+
+                        <div class="row g-2 px-3 py-2">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body d-flex align-items-center py-2 px-3 bg-light">
+                                        <div class="me-2 text-primary fs-4">
+                                        </div>
+                                        <div>
+                                            <small class="font-16">Total Sales</small>
+                                            <div class="fw-bold" style="color:#007bff !important" id="totalSalesBox">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body d-flex align-items-center py-2 px-3 bg-light">
+                                        <div class="me-2 text-success fs-4">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div>
+                                            <small class="font-16">Paid</small>
+                                            <div class="fw-bold text-success" id="paidSalesBox">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body d-flex align-items-center py-2 px-3 bg-light">
+                                        <div class="me-2 text-warning fs-4">
+                                            <!-- <i class="fas fa-hourglass-half"></i> -->
+                                        </div>
+                                        <div>
+                                            <small class="font-16">Half</small>
+                                            <div class="fw-bold text-warning" id="halfSalesBox">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body d-flex align-items-center py-2 px-3 bg-light">
+                                        <div class="me-2 text-danger fs-4">
+                                            <i class="fas fa-times-circle"></i>
+                                        </div>
+                                        <div>
+                                            <small class="font-16">UnPaid</small>
+                                            <div class="fw-bold text-danger" id="unpaidSalesBox">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body pt-2">
+                            <div class="table-responsive">
+                                <table class="table data-table table-striped table-bordered nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Sn</th>
+                                                                                        <th>Created By</th>
+                                                                                        <th>Name</th>
+                                            <th>Invoice No</th>
+                                            <th>Po No</th>
+                                            <th>Final Amount</th>
+                                            <th>Office Name</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <span id="videoModalLabel" class="fw-bold"></span>
+                    <button type="button" class="btn-close text-danger btn" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+
+                <div class="modal-body p-0">
+                    <iframe id="videoFrame" width="100%" height="450" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="settingSidebar">
+    <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+    </a>
+    <div class="settingSidebar-body ps-container ps-theme-default">
+        <div class=" fade show active">
+            <div class="setting-panel-header">Setting Panel
+            </div>
+            <div class="p-15 border-bottom">
+                <h6 class="font-medium m-b-10">Select Layout</h6>
+                <div class="selectgroup layout-color w-50">
+                    <label class="selectgroup-item">
+                        <input type="radio" name="value" value="1"
+                            class="selectgroup-input-radio select-layout" checked>
+                        <span class="selectgroup-button">Light</span>
+                    </label>
+                    <label class="selectgroup-item">
+                        <input type="radio" name="value" value="2"
+                            class="selectgroup-input-radio select-layout">
+                        <span class="selectgroup-button">Dark</span>
+                    </label>
+                </div>
+            </div>
+            <div class="p-15 border-bottom">
+                <h6 class="font-medium m-b-10">Sidebar Color</h6>
+                <div class="selectgroup selectgroup-pills sidebar-color">
+                    <label class="selectgroup-item">
+                        <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
+                        <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                            data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
+                    </label>
+                    <label class="selectgroup-item">
+                        <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar"
+                            checked>
+                        <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
+                            data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
+                    </label>
+                </div>
+            </div>
+            <div class="p-15 border-bottom">
+                <h6 class="font-medium m-b-10">Color Theme</h6>
+                <div class="theme-setting-options">
+                    <ul class="choose-theme list-unstyled mb-0">
+                        <li title="white" class="active">
+                            <div class="white"></div>
+                        </li>
+                        <li title="cyan">
+                            <div class="cyan"></div>
+                        </li>
+                        <li title="black">
+                            <div class="black"></div>
+                        </li>
+                        <li title="purple">
+                            <div class="purple"></div>
+                        </li>
+                        <li title="orange">
+                            <div class="orange"></div>
+                        </li>
+                        <li title="green">
+                            <div class="green"></div>
+                        </li>
+                        <li title="red">
+                            <div class="red"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="p-15 border-bottom">
+                <div class="theme-setting-options">
+                    <label class="m-b-0">
+                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                            id="mini_sidebar_setting">
+                        <span class="custom-switch-indicator"></span>
+                        <span class="control-label p-l-10">Mini Sidebar</span>
+                    </label>
+                </div>
+            </div>
+            <div class="p-15 border-bottom">
+                <div class="theme-setting-options">
+                    <label class="m-b-0">
+                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
+                            id="sticky_header_setting">
+                        <span class="custom-switch-indicator"></span>
+                        <span class="control-label p-l-10">Sticky Header</span>
+                    </label>
+                </div>
+            </div>
+            <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
+                <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
+                    <i class="fas fa-undo"></i> Restore Default
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<footer class="main-footer">
+    <div class="footer-left">
+        <a href="https://www.evtlindia.com/">EVTL INDIA</a></a>
+    </div>
+    <div class="footer-right">
+    </div>
+</footer>
+</div>
+</div>
+
+
+<!-- Modal -->
+<div id="noteModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content contents">
+            <div class="text-center">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-times"></i></span>
+                </button>
+                <h2 class="modal-title text-danger">Pinned Notes</h2>
+            </div>
+
+            <div class="modal-body">
+                <div class="container">
+                    <div class="horizontal">
+                        <!-- Left Section: Note Form -->
+                        <div class="verticals six col-md-6">
+                            <div class="nodes">
+                                <div class="left-strip" id="notes-container">
+                                                                            <div class="note-card p-1" id="note-8">
+                                            <div class="note-header mb-0 d-flex justify-content-between"
+                                                data-title="hii" data-desc="&lt;p&gt;ahsahs&lt;/p&gt;">
+                                                <h6 class="note-title">hii</h6>
+                                                <p>
+                                                    <a href="javascript:void(0)" class="text-danger delete-note"
+                                                        data-id="8">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                            <div class="note-footer">
+                                                <span
+                                                    class="note-date">30 Dec, 2025 4:28 am</span>
+                                            </div>
+                                        </div>
+                                                                            <div class="note-card p-1" id="note-7">
+                                            <div class="note-header mb-0 d-flex justify-content-between"
+                                                data-title="hello" data-desc="&lt;p&gt;hii&lt;/p&gt;">
+                                                <h6 class="note-title">hello</h6>
+                                                <p>
+                                                    <a href="javascript:void(0)" class="text-danger delete-note"
+                                                        data-id="7">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                            <div class="note-footer">
+                                                <span
+                                                    class="note-date">30 Dec, 2025 4:28 am</span>
+                                            </div>
+                                        </div>
+                                                                    </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section: Pinned Note -->
+                        <div class="verticals six col-md-6">
+                            <div class="left-strip">
+                                <form id="noteForm" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <input type="text" id="noteTitle" name="title" class="form-control"
+                                            placeholder="Enter note title">
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea id="noteDescription" name="desc" class="form-control summernote-simple"
+                                            placeholder="Enter note description"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary col-md-12" id="saveNoteButton">Save
+                                        Note</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="holidayModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content shadow-lg border-0 rounded-3">
+            <div class="modal-header bg-danger text-white">
+                <h4 class="modal-title">
+                    <i class="fa fa-calendar"></i> Upcoming Holidays
+                </h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close">X</button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-semibold text-secondary mb-0">Holiday List</h5>
+                    <button class="btn btn-success btn-sm" id="importHolidayBtn">
+                        <i class="fa fa-file-excel-o"></i> Import from Excel
+                    </button>
+                </div>
+
+                <!-- Import Form (Hidden) -->
+                <form id="importHolidayForm" enctype="multipart/form-data" class="mb-4" style="display: none;">
+                    <div class="input-group">
+                        <input type="file" name="holiday_excel" id="holidayExcelFile" class="form-control"
+                            accept=".xlsx,.xls">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-upload"></i> Upload
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Holiday Table -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle text-center border">
+                        <thead class="table-danger text-dark">
+                            <tr>
+                                <th>Holiday Title</th>
+                                <th>To Date</th>
+                                <th>From Date</th>
+                                <th>Day</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">New Year’s Day</td>
+                                    <td>
+                                        1 Jan 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Thursday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Republic Day</td>
+                                    <td>
+                                        26 Jan 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Monday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Maha Shivratri</td>
+                                    <td>
+                                        15 Feb 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Sunday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Holi</td>
+                                    <td>
+                                        4 Mar 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Wednesday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Ram Navami / Maha Navami</td>
+                                    <td>
+                                        1 Apr 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Wednesday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Good Friday</td>
+                                    <td>
+                                        3 Apr 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Friday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Independence Day</td>
+                                    <td>
+                                        15 Aug 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Saturday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Mahatma Gandhi Jayanti</td>
+                                    <td>
+                                        2 Oct 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Friday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Dussehra / Vijayadashami</td>
+                                    <td>
+                                        11 Oct 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Sunday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Choti Diwali</td>
+                                    <td>
+                                        7 Nov 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Saturday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Diwali Poojan / Main Diwali</td>
+                                    <td>
+                                        8 Nov 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Sunday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Govardhan Puja</td>
+                                    <td>
+                                        9 Nov 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Monday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Bhai Dooj</td>
+                                    <td>
+                                        10 Nov 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Tuesday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Chhath Puja</td>
+                                    <td>
+                                        12 Nov 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Thursday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Guru Nanak’s Birthday</td>
+                                    <td>
+                                        24 Nov 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Tuesday</td>
+                                </tr>
+
+                                                            <tr id="holiday">
+                                    <td class="fw-semibold">Christmas</td>
+                                    <td>
+                                        25 Dec 2026
+                                    </td>
+                                    <td>
+                                        —
+                                    </td>
+                                    <td>Friday</td>
+                                </tr>
+
+                                                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="noteDescModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Note Details</h5>
+            </div>
+            <div class="modal-body">
+                <form id="editNoteForm">
+                    <input type="hidden" id="noteId" name="id">
+                    <div class="form-group">
+                        <label for="editNoteTitle">Title</label>
+                        <input type="text" id="editNoteTitle" name="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editNoteDescription">Description</label>
+                        <textarea id="editNoteDescription" name="desc" class="form-control summernote-simple"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveNoteChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 🧾 Company Document Modal -->
+<div class="modal fade" id="companyDocumentModal" tabindex="-1" aria-labelledby="companyDocumentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="companyDocumentModalLabel">
+                    <i class="fa fa-folder-open me-2"></i>Company Documents
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close">X</button>
+            </div>
+
+            <div class="modal-body p-4">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:60%">Document Name</th>
+                            <th class="text-center" style="width:40%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                                                    <tr>
+                                <td>GST Certificate</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/gst_certificate.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>MSME Certificate</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/msme_certificate.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>Incorporation Certificate</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/certificate_of_incorporation.PDF"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>PAN Card</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/evtl_pan_card.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>Cancelled Cheque (HDFC Bank)</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/hdfc_bank_cancel_chequebook.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>Cancelled Cheque (ICICI Bank)</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/icici_bank_cancel_chequebook.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>ITR (2023-24)</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/itr_2023-24.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>ITR (2024-25)</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/itr_2024-25.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>ITR (2025-26)</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/itr_2025-26.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>IEC Certificate New</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/iec_certification_new.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                                    <tr>
+                                <td>EVTL NOIDA GST</td>
+                                <td class="text-center">
+                                    <a href="http://localhost/CRM/public/evtl_noida_gst.pdf"
+                                        class="btn btn-sm btn-outline-success" download>
+                                        <i class="fa fa-download"></i> Download
+                                    </a>
+                                </td>
+                            </tr>
+                                            </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 🧾 Company Profile Modal -->
+<div class="modal fade" id="companyProfileModal" tabindex="-1" aria-labelledby="companyProfileModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="companyProfileModalLabel">
+                    <i class="fa fa-id-card me-2"></i>Company Profile
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close">X</button>
+            </div>
+
+            <div class="modal-body p-0" style="height: 85vh;">
+                <iframe src="http://localhost/CRM/public/company_profile.pdf" width="100%" height="100%"
+                    style="border: none;">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- General JS Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/cdb.min.js"></script>
+
+
+<script src="http://localhost/CRM/public/assets/js/app.min.js"></script>
+<!-- JS Libraies -->
+<script src="http://localhost/CRM/public/assets/bundles/datatables/datatables.min.js"></script>
+<script src="http://localhost/CRM/public/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js">
+</script>
+<script src="http://localhost/CRM/public/assets/bundles/jquery-ui/jquery-ui.min.js"></script>
+<!-- Page Specific JS File -->
+<script src="http://localhost/CRM/public/assets/js/page/datatables.js"></script>
+<!-- Template JS File -->
+<script src="http://localhost/CRM/public/assets/js/scripts.js"></script>
+<!-- Custom JS File -->
+<script src="http://localhost/CRM/public/assets/js/custom.js"></script>
+<script src="http://localhost/CRM/public/assets/bundles/select2/dist/js/select2.full.min.js"></script>
+
+<script src="http://localhost/CRM/public/assets/bundles/izitoast/js/iziToast.min.js"></script>
+<script src="http://localhost/CRM/public/assets/js/page/toastr.js"></script>
+<script src="http://localhost/CRM/public/assets/bundles/summernote/summernote-bs4.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.tooltip-container').on('click', function(e) {
+            e.preventDefault();
+            $('#noteModal').modal('show'); // Show the modal
+        });
+    });
+
+    $(document).ready(function() {
+        $('.holiday-container').on('click', function(e) {
+            e.preventDefault();
+            $('#holidayModal').modal('show'); // Show the modal
+        });
+    });
+
+    $('#noteForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let $form = $(this);
+        if ($form.data('submitted') === true) {
+            return; // Prevent multiple submissions
+        }
+        $form.data('submitted', true);
+
+        let fd = new FormData(this);
+        fd.append('_token', "OcZF9n30Sl7uplNwFAJFHI8uqdeaEAdHkeID0zog");
+
+        $.ajax({
+            url: "http://localhost/CRM/notes/store",
+            type: "POST",
+            data: fd,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function(result) {
+                if (result.status) {
+                    // Show success message
+                    iziToast.success({
+                        message: result.message,
+                        position: 'topRight',
+                    });
+
+                    // Create a new note card and append it to #notes-container
+                    let newNote = `
+                    <div class="note-card p-1" id="note-${result.data.id}">
+                        <div class="note-header mb-0" data-title="${result.data.title}" data-desc="${result.data.desc}">
+                            <h6 class="note-title">${result.data.title}</h6>
+                        </div>
+                        <div class="note-footer">
+                            <span class="note-date">${new Date(result.data.created_at).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                    </div>
+                `;
+
+                    $('#notes-container').prepend(
+                        newNote); // Add the new note to the top of the list
+
+                    // Reset the form
+                    $form[0].reset();
+
+                    // Clear the Summernote content
+                    $('#noteDescription').summernote('reset'); // Reset Summernote
+                } else {
+                    iziToast.warning({
+                        message: result.message,
+                        position: 'topRight',
+                    });
+                }
+            },
+            error: function(jqXHR, exception) {
+                let message = 'An unexpected error occurred.';
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    message = jqXHR.responseJSON.message;
+                }
+
+                iziToast.warning({
+                    message: message,
+                    position: 'topRight',
+                });
+            },
+            complete: function() {
+                $form.data('submitted', false);
+            },
+        });
+    });
+
+    $(document).ready(function() {
+        let currentNoteId;
+
+        // Event delegation for note-header click
+        $(document).on('click', '.note-header', function(e) {
+            // Prevent action if the click originated from a child element (like delete button)
+            if ($(e.target).closest('.delete-note').length) {
+                return;
+            }
+
+            currentNoteId = $(this).closest('.note-card').attr('id').split('-')[
+                1]; // Extract the note ID
+            const title = $(this).data('title');
+            const description = $(this).data('desc');
+
+            // Debugging: Log title and description to console
+            console.log("Title: ", title);
+            console.log("Description: ", description);
+
+            // Check if title and description are being passed correctly
+            if (title && description) {
+                // Populate the modal fields
+                $('#noteId').val(currentNoteId);
+                $('#editNoteTitle').val(title);
+                $('#editNoteDescription').summernote('code', description);
+            } else {
+                iziToast.warning({
+                    message: "Data not found or not correctly passed!",
+                    position: 'topRight',
+                });
+                return; // Exit function if data is invalid
+            }
+
+            // Show the modal
+            $('#noteDescModal').modal('show');
+        });
+
+        // Save the updated note details
+        $('#saveNoteChanges').on('click', function() {
+            const noteId = $('#noteId').val();
+            const updatedTitle = $('#editNoteTitle').val();
+            const updatedDescription = $('#editNoteDescription').summernote('code');
+
+            // Basic validation
+            if (!updatedTitle || !updatedDescription) {
+                iziToast.warning({
+                    message: "Both title and description are required!",
+                    position: 'topRight',
+                });
+                return;
+            }
+
+            $.ajax({
+                url: 'http://localhost/CRM/notes/store', // Replace with your actual update endpoint
+                type: 'POST',
+                data: {
+                    id: noteId,
+                    title: updatedTitle,
+                    desc: updatedDescription,
+                    _token: $('meta[name="csrf-token"]').attr(
+                        'content') // CSRF token for Laravel
+                },
+                success: function(response) {
+                    if (response.status) {
+                        // Update the note card details in the UI
+                        const noteCard = $(`#note-${noteId}`);
+                        noteCard.find('.note-title').text(updatedTitle);
+                        noteCard.find('.note-header').data('title', updatedTitle).data(
+                            'desc', updatedDescription);
+
+                        // Show success message
+                        iziToast.success({
+                            message: "Note updated successfully!",
+                            position: 'topRight',
+                        });
+
+                        // Close the modal
+                        $('#noteDescModal').modal('hide');
+                    } else {
+                        iziToast.warning({
+                            message: response.message,
+                            position: 'topRight',
+                        });
+                    }
+                },
+                error: function(jqXHR, exception) {
+                    let message = 'An unexpected error occurred.';
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                        message = jqXHR.responseJSON.message;
+                    }
+
+                    iziToast.error({
+                        message: message,
+                        position: 'topRight',
+                    });
+                },
+            });
+        });
+    });
+    $(document).on('click', '.delete-note', function(e) {
+        e.preventDefault();
+
+        let noteId = $(this).data('id'); // Get the ID of the note
+        let noteCard = $(`#note-${noteId}`); // Reference to the note card
+
+        // Confirmation dialog
+        $.confirm({
+            title: 'Confirm!',
+            content: 'Are you sure you want to delete this note?',
+            buttons: {
+                yes: function() {
+                    // Hide the modal if it's visible
+                    $('#noteDescModal').modal('hide');
+
+                    // AJAX request to delete the note
+                    $.ajax({
+                        url: 'http://localhost/CRM/notes/delete', // Update this with your delete route
+                        type: 'POST',
+                        data: {
+                            id: noteId,
+                            _token: $('meta[name="csrf-token"]').attr(
+                                'content') // CSRF Token for Laravel
+                        },
+                        success: function(response) {
+                            if (response.status) {
+                                iziToast.success({
+                                    message: response.message,
+                                    position: 'topRight',
+                                });
+
+                                // Remove the note card from the DOM
+                                noteCard.fadeOut('slow', function() {
+                                    $(this).remove();
+                                });
+                            } else {
+                                iziToast.warning({
+                                    message: response.message,
+                                    position: 'topRight',
+                                });
+                            }
+                        },
+                        error: function(jqXHR, exception) {
+                            iziToast.error({
+                                message: 'An error occurred while deleting the note.',
+                                position: 'topRight',
+                            });
+                        }
+                    });
+                },
+                no: function() {
+                    // Do nothing
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#closeDropdown').on('click', function() {
+            $('.dropdown-menu').removeClass('show'); // This will manually close the dropdown
+        });
+    });
+
+    $(document).ready(function() {
+        $('.choose-theme li').click(function() {
+            var selectedTheme = $(this).attr('title');
+            localStorage.setItem('selectedTheme', selectedTheme);
+            applyTheme(selectedTheme);
+        });
+
+        function applyTheme(theme) {
+            $('body').removeClass(
+                'theme-white theme-cyan theme-black theme-purple theme-orange theme-green theme-red');
+            $('body').addClass('theme-' + theme);
+        }
+
+        var storedTheme = localStorage.getItem('selectedTheme');
+        if (storedTheme) {
+            applyTheme(storedTheme);
+        }
+
+        $('.btn-restore-theme').click(function(event) {
+            event.preventDefault();
+            console.log("Restore Default button clicked");
+            restoreDefaultTheme();
+        });
+
+        function restoreDefaultTheme() {
+            var defaultTheme = 'white';
+            $('.choose-theme li[title="' + defaultTheme + '"]').click();
+        }
+
+    });
+</script>
+<script>
+    document.getElementById('importHolidayBtn').addEventListener('click', function() {
+        const form = document.getElementById('importHolidayForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    });
+
+    $('#importHolidayForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+        formData.append('_token', 'OcZF9n30Sl7uplNwFAJFHI8uqdeaEAdHkeID0zog');
+
+        $.ajax({
+            url: 'http://localhost/CRM/holiday/holidays/import',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                iziToast.info({
+                    message: 'Importing... Please wait',
+                    position: 'topRight',
+                });
+            },
+            success: function(response) {
+                if (response.status) {
+                    iziToast.success({
+                        message: response.message,
+                        position: 'topRight',
+                    });
+                    $('#importHolidayForm')[0].reset();
+                    $('#importHolidayForm').hide();
+                    // Optional: Page reload to refresh holidays table
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    iziToast.error({
+                        message: response.message,
+                        position: 'topRight',
+                    });
+                }
+            },
+            error: function(xhr) {
+                iziToast.error({
+                    message: 'Something went wrong!',
+                    position: 'topRight',
+                });
+            }
+        });
+    });
+</script>
+</body>
+
+</html>
+
+    <script type="text/javascript">
+        $(function() {
+            var table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                pageLength: 25,
+                scrollX: true,
+                ajax: {
+                    url: "http://localhost/CRM/invoiceUSD/performa/index/evtl",
+                    data: function(d) {
+                        d.date_filter = $('#dateFilter').val();
+                    }
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                     {
+                            extend: 'excel'
+                        },
+                     {
+                        extend: 'pageLength'
+                    }
+                ],
+                columns: [{
+                        data: null,
+                        name: 'index',
+                        orderable: false,
+                        searchable: false
+                    },
+                     {
+                            data: 'created_by',
+                            name: 'created_by'
+                        },
+                     {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'inv_no',
+                        name: 'inv_no'
+                    },
+                    {
+                        data: 'po_no',
+                        name: 'po_no'
+                    },
+                    {
+                        data: 'final_amt',
+                        name: 'final_amt'
+                    },
+                    {
+                        data: 'inv_type',
+                        name: 'inv_type'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var startIndex = api.context[0]._iDisplayStart;
+
+                    api.column(0).nodes().each(function(cell, i) {
+                        cell.innerHTML = startIndex + i + 1;
+                    });
+
+                    if (settings.json && settings.json.totals) {
+                        $('#totalSalesBox').text(`₹ ${parseFloat(settings.json.totals.total).toFixed(2)} (${settings.json.totals.counts.total} invoices)`);
+                        $('#paidSalesBox').text(`₹ ${parseFloat(settings.json.totals.paid).toFixed(2)} (${settings.json.totals.counts.paid} invoices)`);
+                        $('#halfSalesBox').text(`₹ ${parseFloat(settings.json.totals.half).toFixed(2)} (${settings.json.totals.counts.half} invoices)`);
+                        $('#unpaidSalesBox').text(`₹ ${parseFloat(settings.json.totals.unpaid).toFixed(2)} (${settings.json.totals.counts.unpaid} invoices)`);
+                    }
+                }
+            });
+
+            $('#dateFilter').on('change', function() {
+                table.ajax.reload();
+            });
+
+            $(document).on('change', '.status-dropdown', function() {
+                let id = $(this).data('id');
+                let status = $(this).val();
+                let type = "evtl";
+
+                $.ajax({
+                    url: 'http://localhost/CRM/invoiceUSD/invoice-usd/update-status',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        status: status,
+                        type: type,
+                        _token: 'OcZF9n30Sl7uplNwFAJFHI8uqdeaEAdHkeID0zog'
+                    },
+                    success: function(response) {
+                        table.ajax.reload(null, false);
+
+                        if (response.status) {
+                            iziToast.success({
+                                message: response.message,
+                                position: 'topRight'
+                            });
+
+                            if (response.totals) {
+                                $('#totalSalesBox').text(`₹ ${parseFloat(response.totals.total).toFixed(2)} (${response.totals.counts.total} invoices)`);
+                                $('#paidSalesBox').text(`₹ ${parseFloat(response.totals.paid).toFixed(2)} (${response.totals.counts.paid} invoices)`);
+                                $('#halfSalesBox').text(`₹ ${parseFloat(response.totals.half).toFixed(2)} (${response.totals.counts.half} invoices)`);
+                                $('#unpaidSalesBox').text(`₹ ${parseFloat(response.totals.unpaid).toFixed(2)} (${response.totals.counts.unpaid} invoices)`);
+                            }
+                        } else {
+                            iziToast.error({
+                                message: 'Failed to update status',
+                                position: 'topRight'
+                            });
+                        }
+                    },
+                    error: function() {
+                        iziToast.error({
+                            message: 'An error occurred',
+                            position: 'topRight'
+                        });
+                    }
+                });
+            });
+
+            function handleDelete(id) {
+                let fd = new FormData();
+                fd.append('id', id);
+                fd.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Sure you want to delete this Invoice USD?',
+                    buttons: {
+                        yes: function() {
+                            $.ajax({
+                                    url: "http://localhost/CRM/invoiceUSD/performa/delete",
+                                    type: 'POST',
+                                    data: fd,
+                                    dataType: "JSON",
+                                    contentType: false,
+                                    processData: false,
+                                })
+                                .done(function(result) {
+                                    if (result.status) {
+                                        iziToast.success({
+                                            message: result.message,
+                                            position: 'topRight'
+                                        });
+                                        table.ajax.reload();
+                                    } else {
+                                        iziToast.error({
+                                            message: result.message,
+                                            position: 'topRight'
+                                        });
+                                    }
+                                })
+                                .fail(function(jqXHR) {
+                                    console.log(jqXHR.responseText);
+                                });
+                        },
+                        no: function() {}
+                    }
+                });
+            }
+
+            $('.data-table').on('click', '.delete', function() {
+                var id = $(this).data('id');
+                handleDelete(id);
+            });
+
+        });
+    </script>
